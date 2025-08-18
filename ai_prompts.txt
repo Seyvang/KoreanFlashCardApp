@@ -1,0 +1,1 @@
+Look at the file Topik2000Words.csv and edit the file. This contains common words from TOPIK 6000 words from 1000 to 2000. In each row fill out the Rowtype. Rowtype is an enum matching for different Korean word types. 1 for 명사, 2 for 대명사, 3 for 수사, 4 for 관형사, 5 for 부사, 6 for 감탄사, 7 for 조사, 8 for 동사, 9 for 형용사 

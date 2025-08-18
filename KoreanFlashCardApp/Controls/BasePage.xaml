@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="KoreanFlashCardApp.Controls.BasePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Name="ThisBasePage">
+
+    <Grid />
+
+    <!--  This holds the content of the page.  -->
+    <!--  Other pages can override ControlTemplate, namely modal-presented pages, like BasePopupPage  -->
+    <!--<ContentPage.ControlTemplate>-->
+    <!--<ControlTemplate x:DataType="controls:BasePage">
+
+            <Grid x:Name="LayoutGrid" BindingContext="{Binding Source={x:Reference ThisBasePage}}">
+                <Grid.RowDefinitions>
+    -->
+    <!--  Optional Separator  -->
+    <!--
+                    <RowDefinition Height="Auto" />
+    -->
+    <!--  Optional Alert Banner  -->
+    <!--
+                    <RowDefinition Height="Auto" />
+    -->
+    <!--  Main Content  -->
+    <!--
+                    <RowDefinition Height="*" />
+    -->
+    <!--  Optional Separator  -->
+    <!--
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <BoxView Grid.Row="0"
+                 BackgroundColor="{DynamicResource NavbarSeparator}"
+                 HeightRequest="1"
+                 IsVisible="{Binding ShowNavbarSeparator}"
+                 VerticalOptions="Start" />
+
+    -->
+    <!--  This is the page content  -->
+    <!--
+                <ContentPresenter Grid.Row="2"
+                          Grid.Column="0"
+                          BindingContext="{Binding BindingContext}"
+                          HorizontalOptions="FillAndExpand"
+                          VerticalOptions="FillAndExpand" />
+
+                <controls:BannerOverlays x:Name="BannerOverlayContainer" Grid.Row="1" />
+
+                <controls:TriggerPanelOverlay x:Name="TriggerPanelOverlayContainer"
+                                      Grid.Row="2"
+                                      IsVisible="{Binding ShowTriggerPanel}" />
+
+                <BoxView Grid.Row="3"
+                 BackgroundColor="{DynamicResource NavbarSeparator}"
+                 HeightRequest="1"
+                 IsVisible="{Binding TabBarIsVisible}"
+                 VerticalOptions="Start" />
+
+            </Grid>
+        </ControlTemplate>
+    </ContentPage.ControlTemplate>-->
+
+</ContentPage>
