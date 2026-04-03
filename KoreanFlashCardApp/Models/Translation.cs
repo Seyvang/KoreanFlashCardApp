@@ -28,6 +28,6 @@ namespace KoreanFlashCardApp.Models
         public Definition? Definition { get; set; }
 
         [JsonIgnore]
-        public Translation? Translation_Word { get; set; }
+        public Word? Translation_Word { get; set; }
     }
 }

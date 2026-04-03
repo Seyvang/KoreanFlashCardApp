@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:BasePage
+    x:Class="KoreanFlashCardApp.StudySessionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:KoreanFlashCardApp.Controls"
+    xmlns:models="clr-namespace:KoreanFlashCardApp.Models"
+    xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
+    Shell.NavBarIsVisible="False"
+    x:DataType="viewModels:StudySessionPageViewModel"
+    x:Name="SessionPageRoot"
+    BackgroundColor="#F3EDE2">
+
+    <Grid Padding="20,24,20,20" RowDefinitions="Auto,Auto,*,Auto">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
+            <Button
+                BackgroundColor="#E5DBCE"
+                Command="{Binding ReturnToModulesCommand}"
+                CornerRadius="18"
+                FontAttributes="Bold"
+                Padding="16,10"
+                Text="Modules"
+                TextColor="#3A332D" />
+            <VerticalStackLayout Grid.Column="1" Margin="16,0,0,0" Spacing="2">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="26"
+                    Text="{Binding SessionTitle}"
+                    TextColor="#1E1B18" />
+                <Label
+                    FontSize="14"
+                    Text="{Binding SessionSubtitle}"
+                    TextColor="#645A4E" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <controls:WordDefinitionHeader
+            Grid.Row="1"
+            Margin="0,20,0,18"
+            IsVisible="{Binding HasCard}" />
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Spacing="18">
+                <VerticalStackLayout IsVisible="{Binding HasCard}" Spacing="18">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Select the best English definition"
+                        TextColor="#1E1B18" />
+
+                    <VerticalStackLayout
+                        BindableLayout.ItemsSource="{Binding Options}"
+                        Spacing="12">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:FlashCardOption">
+                                <Frame
+                                    Padding="0"
+                                    BackgroundColor="{Binding BackgroundColor}"
+                                    BorderColor="{Binding BorderColor}"
+                                    CornerRadius="20"
+                                    HasShadow="False">
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding BindingContext.SelectOptionCommand, Source={x:Reference SessionPageRoot}}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="16"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Padding="18,16"
+                                        Text="{Binding Text}"
+                                        TextColor="{Binding TextColor}" />
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Frame
+                        Padding="18"
+                        BackgroundColor="#FBF8F2"
+                        BorderColor="#D8CCBB"
+                        CornerRadius="22"
+                        HasShadow="False"
+                        IsVisible="{Binding ShowFeedback}">
+                        <VerticalStackLayout Spacing="12">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding FeedbackTitle}"
+                                TextColor="#1E1B18" />
+                            <Label
+                                FontSize="15"
+                                Text="{Binding FeedbackBody}"
+                                TextColor="#544B40" />
+                            <Button
+                                BackgroundColor="#1D4D4F"
+                                Command="{Binding NextCommand}"
+                                CornerRadius="18"
+                                FontAttributes="Bold"
+                                Padding="18,12"
+                                Text="{Binding NextButtonText}"
+                                TextColor="#FBF8F2" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+
+                <Frame
+                    Padding="24"
+                    BackgroundColor="#FBF8F2"
+                    BorderColor="#D8CCBB"
+                    CornerRadius="26"
+                    HasShadow="False"
+                    IsVisible="{Binding IsSessionComplete}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="28"
+                            Text="{Binding CompletionTitle}"
+                            TextColor="#1E1B18" />
+                        <Label
+                            FontSize="16"
+                            Text="{Binding CompletionSummary}"
+                            TextColor="#544B40" />
+                        <Button
+                            BackgroundColor="#C56E4A"
+                            Command="{Binding ReturnToModulesCommand}"
+                            CornerRadius="18"
+                            FontAttributes="Bold"
+                            Padding="18,12"
+                            Text="Back to modules"
+                            TextColor="#FFF9F2" />
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Label
+            Grid.Row="3"
+            Margin="0,16,0,0"
+            FontSize="13"
+            HorizontalTextAlignment="Center"
+            Text="{Binding ProgressSummary}"
+            TextColor="#6C6256" />
+    </Grid>
+</controls:BasePage>

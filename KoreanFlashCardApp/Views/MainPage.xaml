@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <controls:BasePage
     x:Class="KoreanFlashCardApp.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,50 +6,219 @@
     xmlns:controls="clr-namespace:KoreanFlashCardApp.Controls"
     xmlns:models="clr-namespace:KoreanFlashCardApp.Models"
     xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
-    x:DataType="viewModels:MainPageViewModel">
+    Shell.NavBarIsVisible="False"
+    x:DataType="viewModels:MainPageViewModel"
+    x:Name="RootPage"
+    BackgroundColor="#F3EDE2">
 
-    <ScrollView>
-        <Grid Grid.RowDefinitions="Auto, Auto">
-            <CollectionView Grid.Row="0" ItemsSource="{Binding Words}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Word">
-                        <Grid Grid.ColumnDefinitions="*, *">
-                            <Label Text="{Binding Word_Name}" />
-                            <Label Grid.Column="1" Text="Test" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <VerticalStackLayout
-                Grid.Row="1"
-                Padding="30,0"
-                Spacing="25">
-                <Image
-                    Aspect="AspectFit"
-                    HeightRequest="185"
-                    SemanticProperties.Description="dot net bot in a hovercraft number nine"
-                    Source="dotnet_bot.png" />
-
+    <Grid Padding="20,28,20,20" RowDefinitions="Auto,Auto,Auto,*">
+        <Frame
+            Grid.Row="0"
+            BackgroundColor="#1D4D4F"
+            BorderColor="#1D4D4F"
+            CornerRadius="28"
+            HasShadow="False"
+            Padding="24">
+            <VerticalStackLayout Spacing="10">
                 <Label
-                    MaxLines="3"
-                    SemanticProperties.HeadingLevel="Level1"
-                    Style="{StaticResource Headline}"
-                    Text="{Binding Title}" />
-
+                    FontAttributes="Bold"
+                    FontSize="34"
+                    Text="{Binding Title}"
+                    TextColor="#F9F6F0" />
                 <Label
-                    SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                    SemanticProperties.HeadingLevel="Level2"
-                    Style="{StaticResource SubHeadline}"
-                    Text="Welcome to &#10;.NET Multi-platform App UI" />
+                    FontSize="16"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding Subtitle}"
+                    TextColor="#DCE8E6" />
+                <Label
+                    FontSize="13"
+                    Text="{Binding ModuleSummary}"
+                    TextColor="#BDD3D0" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <Frame
+            Grid.Row="1"
+            Margin="0,18,0,0"
+            Padding="18"
+            BackgroundColor="#FBF8F2"
+            BorderColor="#D8CCBB"
+            CornerRadius="24"
+            HasShadow="False">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Text="Study All"
+                        TextColor="#1E1B18" />
+                    <Label
+                        FontSize="14"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding StudyAllSummary}"
+                        TextColor="#544B40" />
+                </VerticalStackLayout>
 
                 <Button
-                    Command="{Binding TestCommand}"
-                    HorizontalOptions="Fill"
-                    SemanticProperties.Hint="Counts the number of times you click"
-                    Text="Click me" />
-            </VerticalStackLayout>
+                    Grid.Column="1"
+                    BackgroundColor="#1D4D4F"
+                    Command="{Binding StudyAllCommand}"
+                    CornerRadius="18"
+                    FontAttributes="Bold"
+                    IsEnabled="{Binding HasDueToday}"
+                    Padding="18,10"
+                    Text="Due Today"
+                    TextColor="#FBF8F2"
+                    VerticalOptions="Center" />
+            </Grid>
+        </Frame>
 
+        <Frame
+            Grid.Row="2"
+            Margin="0,18,0,0"
+            Padding="16"
+            BackgroundColor="#F5D8D2"
+            BorderColor="#D09B8E"
+            CornerRadius="20"
+            HasShadow="False"
+            IsVisible="{Binding HasLoadError}">
+            <VerticalStackLayout Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Progress could not be loaded"
+                    TextColor="#692E24" />
+                <Label
+                    FontSize="14"
+                    Text="{Binding LoadError}"
+                    TextColor="#692E24" />
+                <Button
+                    BackgroundColor="#692E24"
+                    Command="{Binding RetryCommand}"
+                    CornerRadius="16"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start"
+                    Padding="16,10"
+                    Text="Retry"
+                    TextColor="#FFF7F4" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <CollectionView
+            Grid.Row="3"
+            ItemsSource="{Binding Modules}"
+            Margin="0,20,0,0"
+            SelectionMode="None">
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalTextAlignment="Center"
+                    Text="No study modules are available yet."
+                    TextColor="#6C6256"
+                    VerticalTextAlignment="Center" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:StudyModule">
+                    <Frame
+                        Margin="0,0,0,16"
+                        Padding="18"
+                        BackgroundColor="#FBF8F2"
+                        BorderColor="#D8CCBB"
+                        CornerRadius="24"
+                        HasShadow="False">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="{Binding ModuleLabel}"
+                                    TextColor="#9E6D3B" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="22"
+                                    Text="{Binding RangeLabel}"
+                                    TextColor="#1E1B18" />
+                                <Label
+                                    FontSize="15"
+                                    Text="{Binding SpanLabel}"
+                                    TextColor="#544B40" />
+                            </VerticalStackLayout>
+
+                            <Button
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                BackgroundColor="#C56E4A"
+                                Command="{Binding BindingContext.StartModuleCommand, Source={x:Reference RootPage}}"
+                                CommandParameter="{Binding ModuleNumber}"
+                                CornerRadius="18"
+                                FontAttributes="Bold"
+                                Padding="18,10"
+                                Text="Study"
+                                TextColor="#FFF9F2" />
+
+                            <Grid
+                                Grid.Row="2"
+                                Grid.ColumnSpan="2"
+                                ColumnDefinitions="*,*"
+                                Margin="0,18,0,0">
+                                <Frame
+                                    Grid.Column="0"
+                                    Padding="12,10"
+                                    BackgroundColor="#EFE6D8"
+                                    BorderColor="#EFE6D8"
+                                    CornerRadius="16"
+                                    HasShadow="False">
+                                    <Label
+                                        FontSize="13"
+                                        Text="{Binding ProgressLabel}"
+                                        TextColor="#4A4137" />
+                                </Frame>
+
+                                <Frame
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    Padding="12,10"
+                                    BackgroundColor="#E1ECE8"
+                                    BorderColor="#E1ECE8"
+                                    CornerRadius="16"
+                                    HasShadow="False">
+                                    <Label
+                                        FontSize="13"
+                                        Text="{Binding DueLabel}"
+                                        TextColor="#264E4A" />
+                                </Frame>
+                            </Grid>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid
+            Grid.RowSpan="4"
+            BackgroundColor="#D7D0C5"
+            IsVisible="{Binding IsLoading}"
+            Opacity="0.92">
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                Spacing="14"
+                VerticalOptions="Center">
+                <ActivityIndicator
+                    Color="#1D4D4F"
+                    HeightRequest="48"
+                    IsRunning="{Binding IsLoading}"
+                    WidthRequest="48" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalTextAlignment="Center"
+                    Text="Preparing your study session"
+                    TextColor="#1E1B18" />
+                <Label
+                    FontSize="15"
+                    HorizontalTextAlignment="Center"
+                    Text="{Binding LoadingMessage}"
+                    TextColor="#5F574D" />
+            </VerticalStackLayout>
         </Grid>
-    </ScrollView>
+    </Grid>
 </controls:BasePage>

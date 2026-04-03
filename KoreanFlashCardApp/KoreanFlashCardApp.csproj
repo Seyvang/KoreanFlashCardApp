@@ -60,6 +60,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Remove="resources\fonts\FontSizes.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
@@ -70,7 +74,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiFont Update="Resources\Fonts\FontSizes.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiFont>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Controls\BasePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\NavbarStyles.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

@@ -24,6 +24,11 @@ namespace KoreanFlashCardApp.Helpers
 
         public void LoadData()
         {
+            if (Words.Count > 0)
+            {
+                return;
+            }
+
             foreach (var wordImport in KoreanWords.ListOfWords)
             {
                 foreach (var translationImport in wordImport.Translations)

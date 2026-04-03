@@ -1,69 +1,115 @@
-﻿using KoreanFlashCardApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using KoreanFlashCardApp.Models;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace KoreanFlashCardApp.Helpers
 {
     public class ProgressProvider
     {
-        private string progressFileName = "progress.json";
-        public List<WordProgress> wordProgress;
-        public async Task SaveProgressAsync(int word_ID)
+        private readonly string progressFileName = "progress.json";
+        private readonly string progressBackupFileName = "progress.backup.json";
+        private List<WordProgress> wordProgress;
+
+        public ProgressProvider()
+        {
+            wordProgress = new List<WordProgress>();
+        }
+
+        public IReadOnlyList<WordProgress> WordProgress => wordProgress;
+
+        public async Task SaveProgressAsync(int word_ID, bool answeredCorrectly)
         {
             var matchedWord = wordProgress.FirstOrDefault(x => x.Word_ID == word_ID);
             if (matchedWord != null)
             {
-                matchedWord.Number_Correct += 1;
-                matchedWord.Next_Test_Date = HandleDateCalculation(matchedWord.Number_Correct);
+                matchedWord.Number_Correct = answeredCorrectly ? matchedWord.Number_Correct + 1 : 0;
+                matchedWord.Next_Test_Date = answeredCorrectly
+                    ? HandleDateCalculation(matchedWord.Number_Correct)
+                    : DateTime.Today;
             }
             else
             {
-                // assume this is a new word and start progress
-                wordProgress.Add(new WordProgress(0, 0, word_ID, HandleDateCalculation(1), 1));
+                var numberCorrect = answeredCorrectly ? 1 : 0;
+                var nextTestDate = answeredCorrectly ? HandleDateCalculation(1) : DateTime.Today;
+                wordProgress.Add(new WordProgress(0, 0, word_ID, nextTestDate, numberCorrect));
             }
 
+            await SaveAsync();
         }
 
-        public async Task SaveOnDisappearing()
+        public async Task SaveAsync()
         {
             var json = JsonSerializer.Serialize(wordProgress);
-
-            // Get the file path for storing the data
             var filePath = Path.Combine(FileSystem.AppDataDirectory, progressFileName);
+            var backupFilePath = Path.Combine(FileSystem.AppDataDirectory, progressBackupFileName);
 
-            // Write the JSON data to the file
             await File.WriteAllTextAsync(filePath, json);
-        }
-
-        public ProgressProvider()
-        {
-            
+            await File.WriteAllTextAsync(backupFilePath, json);
         }
 
         public async Task LoadProgressAsync()
         {
             var filePath = Path.Combine(FileSystem.AppDataDirectory, progressFileName);
+            var backupFilePath = Path.Combine(FileSystem.AppDataDirectory, progressBackupFileName);
 
-            if (File.Exists(filePath))
+            var loadedProgress = await TryLoadAsync(filePath) ?? await TryLoadAsync(backupFilePath);
+            if (loadedProgress is not null)
             {
-                var json = await File.ReadAllTextAsync(filePath);
-
-                // Deserialize the JSON into a list of WordProgress objects
-                wordProgress = JsonSerializer.Deserialize<List<WordProgress>>(json) ?? new List<WordProgress>();
+                wordProgress = loadedProgress;
+                return;
             }
 
             wordProgress = new List<WordProgress>();
         }
 
-        private DateTime HandleDateCalculation(int numberCorrect)
+        public void LoadProgress()
         {
-            var dayMultiplier = Math.Pow(2, numberCorrect - 1);
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, progressFileName);
+            var backupFilePath = Path.Combine(FileSystem.AppDataDirectory, progressBackupFileName);
 
+            var loadedProgress = TryLoad(filePath) ?? TryLoad(backupFilePath);
+            wordProgress = loadedProgress ?? new List<WordProgress>();
+        }
+
+        private static DateTime HandleDateCalculation(int numberCorrect)
+        {
+            var dayMultiplier = Math.Pow(2, Math.Max(0, numberCorrect - 1));
             return DateTime.Today.AddDays(dayMultiplier);
+        }
+
+        private static async Task<List<WordProgress>?> TryLoadAsync(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+
+            try
+            {
+                var json = await File.ReadAllTextAsync(filePath);
+                return JsonSerializer.Deserialize<List<WordProgress>>(json);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static List<WordProgress>? TryLoad(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+
+            try
+            {
+                var json = File.ReadAllText(filePath);
+                return JsonSerializer.Deserialize<List<WordProgress>>(json);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

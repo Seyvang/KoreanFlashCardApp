@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="KoreanFlashCardApp.Controls.WordDefinitionHeader"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
+    x:DataType="viewModels:StudySessionPageViewModel">
+
+    <Frame
+        Padding="20"
+        BackgroundColor="#1E1B18"
+        BorderColor="#1E1B18"
+        CornerRadius="28"
+        HasShadow="False">
+        <VerticalStackLayout Spacing="10">
+            <Grid ColumnDefinitions="Auto,*">
+                <Frame
+                    Padding="10,6"
+                    BackgroundColor="#2C7A58"
+                    BorderColor="#2C7A58"
+                    CornerRadius="14"
+                    HasShadow="False">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="{Binding ModuleBadge}"
+                        TextColor="#F5FFF7" />
+                </Frame>
+                <Label
+                    Grid.Column="1"
+                    FontSize="13"
+                    HorizontalTextAlignment="End"
+                    Text="{Binding CounterLabel}"
+                    TextColor="#C9C1B6"
+                    VerticalTextAlignment="Center" />
+            </Grid>
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="36"
+                Text="{Binding CurrentCard.TargetWord.Word_Name}"
+                TextColor="#FFF9F2" />
+
+            <Frame
+                Padding="10,6"
+                BackgroundColor="#F0E4C6"
+                BorderColor="#F0E4C6"
+                CornerRadius="14"
+                HasShadow="False"
+                HorizontalOptions="Start">
+                <Label
+                    FontSize="12"
+                    Text="{Binding WordTypeLabel}"
+                    TextColor="#5E461E" />
+            </Frame>
+
+            <Label
+                FontSize="15"
+                LineBreakMode="WordWrap"
+                Text="{Binding WordDefinitionText}"
+                TextColor="#D7D0C5" />
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>

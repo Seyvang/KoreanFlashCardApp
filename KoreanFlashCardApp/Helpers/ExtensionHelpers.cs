@@ -13,9 +13,19 @@ namespace KoreanFlashCardApp.Helpers
         public static IList<Word> GenerateOptions(this IList<Word> wordList, Word targetWord)
         {
             var stopwatch = Stopwatch.StartNew();
-            var options = wordList.Where(x => x.Word_Type_ID == targetWord.Word_Type_ID).Take(4);
+
+            var options = wordList
+                .Where(x => x.Word_Type_ID == targetWord.Word_Type_ID && x.Word_ID != targetWord.Word_ID)
+                .OrderBy(_ => Random.Shared.Next())
+                .Take(3)
+                .ToList();
+
+            options.Add(targetWord);
+
             var elapsedTime = stopwatch.ElapsedMilliseconds;
-            return options.ToList();
+            return options
+                .OrderBy(_ => Random.Shared.Next())
+                .ToList();
         }
     }
 }

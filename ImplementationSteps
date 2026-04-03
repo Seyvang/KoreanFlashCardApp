@@ -1,0 +1,64 @@
+KoreanFlashCardApp Implementation Checklist
+
+1. Fix the app foundation
+- Make `App` resolve and return the DI-created `AppShell` instead of creating a new unmanaged instance.
+- Verify `WordProvider.LoadData()` runs once at startup and does not duplicate words on repeated app launches.
+- Un-comment or replace the `BasePage` template only if it is still needed; otherwise remove dead scaffolding.
+
+2. Finish the data and service layer
+- Complete `FlashCardProvider` so it can build quiz sessions from the loaded word list.
+- Fix `ProgressProvider.LoadProgressAsync()` so it does not overwrite loaded progress with an empty list.
+- Make `SaveProgressAsync()` persist changes after updating progress.
+- Register any missing providers in dependency injection.
+
+3. Define the MVP screen flow
+- Decide the minimum page flow: module selection -> flashcard session -> answer result -> next card.
+- Keep the first release to one learning module for TOPIK vocabulary instead of designing for every future mode.
+- Add routing for each page in `AppShell`.
+
+4. Build the WordDefinition Header
+- Create a reusable header component or content view for the active word.
+- Show the Korean term, word type, and supporting definition text.
+- Make this the visual anchor for study and review pages.
+
+5. Build the module page
+- Create the module page listed in `ThingsToDo.odt`.
+- Show available study modules, word counts, and progress status.
+- Make this the first meaningful screen instead of the current placeholder main page.
+- Each should be split off into 15 words.
+
+6. Build the flashcard session page
+- Show one target word at a time.
+- Generate answer choices from words with the same `Word_Type_ID`.
+- Add submit, reveal answer, next card, and session completion states.
+
+7. Implement pacing and review logic
+- Keep the current 1, 2, 4 day pattern as the initial spacing rule.
+- Filter sessions so due words appear before new words.
+- Record correct and incorrect outcomes separately if you want pacing to improve later.
+
+8. Replace placeholder UI
+- Remove the .NET bot image, test title, and sample welcome copy from `MainPage`.
+- Replace placeholder shell title labels with real app navigation and screen titles.
+- Apply the existing resource dictionaries consistently across the new screens.
+
+9. Validate the model against the original design notes
+- Confirm `Word`, `Translation`, and `Definition` still match the intent in `KoreanFlashCardApp.odt`.
+- Decide whether `Translation.Translation_Word` should point to `Word` instead of `Translation`.
+- Review naming consistency for `Word_Name`, `Definition_Description`, and enum-backed IDs.
+
+10. Prepare for sync later without blocking MVP
+- Keep local JSON progress storage for the first working release.
+- Define a future sync contract for user progress, devices, and conflict handling.
+- Do not add backend complexity until the single-device learning flow works end to end.
+
+11. Add verification
+- Build the solution after each major milestone.
+- Add a small testable surface for option generation and progress date calculation.
+- Run at least one manual session on device or Windows target to verify navigation and persistence.
+
+Suggested execution order
+- First: steps 1, 2, and 8
+- Next: steps 3, 4, 5, and 6
+- Then: steps 7 and 11
+- Later: steps 9 and 10

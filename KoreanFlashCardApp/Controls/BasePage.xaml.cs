@@ -1,21 +1,13 @@
-﻿using KoreanFlashCardApp.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using KoreanFlashCardApp.ViewModels;
 
 namespace KoreanFlashCardApp.Controls;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public abstract partial class BasePage : ContentPage
 {
-    public object _vm;
-    //public BasePage() => InitializeComponent();
-    public BasePage(IPageLifeCycleAware viewModel)
+    protected BasePage(IPageLifeCycleAware viewModel)
     {
         InitializeComponent();
-        _vm = viewModel;
         BindingContext = viewModel;
     }
 
@@ -36,6 +28,6 @@ public abstract partial class BasePage : ContentPage
             vm.OnDisappearing();
         }
 
-        base.OnAppearing();
+        base.OnDisappearing();
     }
 }

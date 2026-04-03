@@ -25,5 +25,24 @@ namespace KoreanFlashCardApp.Models
 
         [JsonIgnore]
         public Translation[] Translations { get; set; }
+
+        [JsonIgnore]
+        public WordSentence[] Sentences { get; set; } = Array.Empty<WordSentence>();
+
+        [JsonIgnore]
+        public string PrimaryDefinition =>
+            Translations?
+                .Select(x => x.Definition?.Definition_Description)
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
+
+        [JsonIgnore]
+        public WordSentence? PrimarySentence =>
+            Sentences
+                .OrderByDescending(x => x.IsPrimary)
+                .ThenBy(x => x.Sort_Order)
+                .FirstOrDefault();
+
+        [JsonIgnore]
+        public string WordTypeDisplay => Word_Type_ID.ToString();
     }
 }

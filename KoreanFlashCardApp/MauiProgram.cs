@@ -29,8 +29,13 @@ namespace KoreanFlashCardApp
         public static void AddServices(IServiceCollection services)
         {
             services.AddSingleton<IWordProvider, WordProvider>();
+            services.AddSingleton<ProgressProvider>();
+            services.AddSingleton<FlashCardProvider>();
+            services.AddSingleton<AppShell>();
             services.AddSingleton<MainPageViewModel>();
             services.AddSingleton<MainPage>();
+            services.AddTransient<StudySessionPageViewModel>();
+            services.AddTransient<StudySessionPage>();
         }
     }
 }

@@ -15,9 +15,9 @@ namespace KoreanFlashCardApp.Models
         {
             Word = new Word(Word_ID, termWord, 2, wordType);
             Translations = new List<TranslationImport> { new TranslationImport { Translation = new Translation(0, Word.Word_ID, 0), Definition = new Definition(0, 1, translation) } };
-            if (String.IsNullOrEmpty(translation2))
+            if (!String.IsNullOrWhiteSpace(translation2))
             {
-                Translations.Add(new TranslationImport { Translation = new Translation(0, Word.Word_ID, 0), Definition = new Definition(0, 1, translation2) });
+                Translations.Add(new TranslationImport { Translation = new Translation(0, Word.Word_ID, 0), Definition = new Definition(0, 1, translation2!) });
             }
         }
     }
