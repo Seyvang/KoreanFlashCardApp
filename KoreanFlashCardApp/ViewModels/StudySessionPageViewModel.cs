@@ -80,6 +80,14 @@ namespace KoreanFlashCardApp.ViewModels
 
         public string ProgressSummary => $"{CorrectAnswers} correct out of {TotalCards}";
 
+        public string ExampleSentenceText => CurrentCard?.TargetWord.PrimarySentence?.Sentence_Text ?? string.Empty;
+
+        public string ExampleSentenceTranslation => CurrentCard?.TargetWord.PrimarySentence?.Translation_Text ?? string.Empty;
+
+        public bool HasExampleSentence =>
+            !string.IsNullOrWhiteSpace(ExampleSentenceText) ||
+            !string.IsNullOrWhiteSpace(ExampleSentenceTranslation);
+
         public string CompletionTitle => TotalCards == 0
             ? IsStudyAllMode ? "Nothing due today" : "No cards in this module"
             : IsStudyAllMode ? "Study All complete" : "Module complete";
@@ -138,7 +146,7 @@ namespace KoreanFlashCardApp.ViewModels
             FeedbackTitle = string.Empty;
             FeedbackBody = string.Empty;
 
-            var dueTodayWords = _flashCardProvider.GetDueTodayWords(_wordProvider.Words, _progressProvider.WordProgress);
+            var dueTodayWords = _flashCardProvider.GetDueTodayWords(_wordProvider.Words, _progressProvider.WordProgress, 15);
             _sessionCards.Clear();
             _sessionCards.AddRange(_flashCardProvider.BuildSession(dueTodayWords, _wordProvider.Words, _progressProvider.WordProgress));
 
@@ -266,6 +274,9 @@ namespace KoreanFlashCardApp.ViewModels
             OnPropertyChanged(nameof(WordDefinitionText));
             OnPropertyChanged(nameof(WordTypeLabel));
             OnPropertyChanged(nameof(ProgressSummary));
+            OnPropertyChanged(nameof(ExampleSentenceText));
+            OnPropertyChanged(nameof(ExampleSentenceTranslation));
+            OnPropertyChanged(nameof(HasExampleSentence));
             OnPropertyChanged(nameof(CompletionTitle));
             OnPropertyChanged(nameof(CompletionSummary));
             OnPropertyChanged(nameof(NextButtonText));

@@ -6,22 +6,25 @@
     xmlns:controls="clr-namespace:KoreanFlashCardApp.Controls"
     xmlns:models="clr-namespace:KoreanFlashCardApp.Models"
     xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
-    Shell.NavBarIsVisible="False"
-    x:DataType="viewModels:StudySessionPageViewModel"
     x:Name="SessionPageRoot"
-    BackgroundColor="#F3EDE2">
+    x:DataType="viewModels:StudySessionPageViewModel"
+    BackgroundColor="#F3EDE2"
+    Shell.NavBarIsVisible="False">
 
     <Grid Padding="20,24,20,20" RowDefinitions="Auto,Auto,*,Auto">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
             <Button
+                Padding="16,10"
                 BackgroundColor="#E5DBCE"
                 Command="{Binding ReturnToModulesCommand}"
                 CornerRadius="18"
                 FontAttributes="Bold"
-                Padding="16,10"
                 Text="Modules"
                 TextColor="#3A332D" />
-            <VerticalStackLayout Grid.Column="1" Margin="16,0,0,0" Spacing="2">
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="16,0,0,0"
+                Spacing="2">
                 <Label
                     FontAttributes="Bold"
                     FontSize="26"
@@ -48,37 +51,33 @@
                         Text="Select the best English definition"
                         TextColor="#1E1B18" />
 
-                    <VerticalStackLayout
-                        BindableLayout.ItemsSource="{Binding Options}"
-                        Spacing="12">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Options}" Spacing="12">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:FlashCardOption">
-                                <Frame
+                                <Border
                                     Padding="0"
-                                    BackgroundColor="{Binding BackgroundColor}"
-                                    BorderColor="{Binding BorderColor}"
-                                    CornerRadius="20"
-                                    HasShadow="False">
+                                    Background="{Binding BackgroundColor}"
+                                    Stroke="{Binding BorderColor}"
+                                    StrokeShape="RoundRectangle 20">
                                     <Button
+                                        Padding="18,16"
                                         BackgroundColor="Transparent"
                                         Command="{Binding BindingContext.SelectOptionCommand, Source={x:Reference SessionPageRoot}}"
                                         CommandParameter="{Binding .}"
                                         FontSize="16"
                                         IsEnabled="{Binding IsEnabled}"
-                                        Padding="18,16"
                                         Text="{Binding Text}"
                                         TextColor="{Binding TextColor}" />
-                                </Frame>
+                                </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
 
-                    <Frame
+                    <Border
                         Padding="18"
-                        BackgroundColor="#FBF8F2"
-                        BorderColor="#D8CCBB"
-                        CornerRadius="22"
-                        HasShadow="False"
+                        Background="#FBF8F2"
+                        Stroke="#D8CCBB"
+                        StrokeShape="RoundRectangle 22"
                         IsVisible="{Binding ShowFeedback}">
                         <VerticalStackLayout Spacing="12">
                             <Label
@@ -90,24 +89,46 @@
                                 FontSize="15"
                                 Text="{Binding FeedbackBody}"
                                 TextColor="#544B40" />
+                            <Border
+                                Padding="16"
+                                Background="#F3EDE2"
+                                Stroke="#D8CCBB"
+                                StrokeShape="RoundRectangle 18"
+                                IsVisible="{Binding HasExampleSentence}">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        Text="Example sentence"
+                                        TextColor="#6C6256" />
+                                    <Label
+                                        FontSize="17"
+                                        Text="{Binding ExampleSentenceText}"
+                                        TextColor="#1E1B18" />
+                                    <Label
+                                        FontSize="14"
+                                        Text="{Binding ExampleSentenceTranslation}"
+                                        TextColor="#645A4E" />
+                                </VerticalStackLayout>
+                            </Border>
                             <Button
+                                Padding="18,12"
                                 BackgroundColor="#1D4D4F"
                                 Command="{Binding NextCommand}"
                                 CornerRadius="18"
                                 FontAttributes="Bold"
-                                Padding="18,12"
                                 Text="{Binding NextButtonText}"
                                 TextColor="#FBF8F2" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </VerticalStackLayout>
 
-                <Frame
+                <Border
+                    Margin="0,18,0,0"
                     Padding="24"
-                    BackgroundColor="#FBF8F2"
-                    BorderColor="#D8CCBB"
-                    CornerRadius="26"
-                    HasShadow="False"
+                    Background="#FBF8F2"
+                    Stroke="#D8CCBB"
+                    StrokeShape="RoundRectangle 26"
                     IsVisible="{Binding IsSessionComplete}">
                     <VerticalStackLayout Spacing="12">
                         <Label
@@ -120,15 +141,15 @@
                             Text="{Binding CompletionSummary}"
                             TextColor="#544B40" />
                         <Button
+                            Padding="18,12"
                             BackgroundColor="#C56E4A"
                             Command="{Binding ReturnToModulesCommand}"
                             CornerRadius="18"
                             FontAttributes="Bold"
-                            Padding="18,12"
                             Text="Back to modules"
                             TextColor="#FFF9F2" />
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
             </VerticalStackLayout>
         </ScrollView>
 

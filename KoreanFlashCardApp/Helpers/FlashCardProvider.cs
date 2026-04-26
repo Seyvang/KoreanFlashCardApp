@@ -53,19 +53,27 @@ namespace KoreanFlashCardApp.Helpers
                 .ToList();
         }
 
-        public IList<Word> GetDueTodayWords(IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries)
+        public IList<Word> GetDueTodayWords(IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries, int maxNumberOfWords = 0)
         {
             var progressLookup = progressEntries
                 .GroupBy(x => x.Word_ID)
                 .ToDictionary(group => group.Key, group => group.OrderByDescending(x => x.Next_Test_Date).First());
 
-            return allWords
+            var returnWords = allWords
                 .Where(word =>
                     progressLookup.TryGetValue(word.Word_ID, out var progress) &&
                     progress.Next_Test_Date.Date <= DateTime.Today)
                 .OrderBy(word => progressLookup[word.Word_ID].Next_Test_Date)
-                .ThenBy(word => word.Word_ID)
-                .ToList();
+                .ThenBy(word => word.Word_ID);
+
+            if (maxNumberOfWords > 0)
+            {
+                return returnWords.Take(maxNumberOfWords).ToList();
+            }
+            else
+            {
+                return returnWords.ToList();
+            }
         }
 
         public int GetDueTodayCount(IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries)

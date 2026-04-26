@@ -6,26 +6,24 @@
     xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
     x:DataType="viewModels:StudySessionPageViewModel">
 
-    <Frame
+    <Border
         Padding="20"
-        BackgroundColor="#1E1B18"
-        BorderColor="#1E1B18"
-        CornerRadius="28"
-        HasShadow="False">
+        Background="#1E1B18"
+        Stroke="#1E1B18"
+        StrokeShape="RoundRectangle 28">
         <VerticalStackLayout Spacing="10">
             <Grid ColumnDefinitions="Auto,*">
-                <Frame
+                <Border
                     Padding="10,6"
-                    BackgroundColor="#2C7A58"
-                    BorderColor="#2C7A58"
-                    CornerRadius="14"
-                    HasShadow="False">
+                    Background="#2C7A58"
+                    Stroke="#2C7A58"
+                    StrokeShape="RoundRectangle 14">
                     <Label
                         FontAttributes="Bold"
                         FontSize="12"
                         Text="{Binding ModuleBadge}"
                         TextColor="#F5FFF7" />
-                </Frame>
+                </Border>
                 <Label
                     Grid.Column="1"
                     FontSize="13"
@@ -41,18 +39,17 @@
                 Text="{Binding CurrentCard.TargetWord.Word_Name}"
                 TextColor="#FFF9F2" />
 
-            <Frame
+            <Border
                 Padding="10,6"
-                BackgroundColor="#F0E4C6"
-                BorderColor="#F0E4C6"
-                CornerRadius="14"
-                HasShadow="False"
+                Background="#F0E4C6"
+                Stroke="#F0E4C6"
+                StrokeShape="RoundRectangle 14"
                 HorizontalOptions="Start">
                 <Label
                     FontSize="12"
                     Text="{Binding WordTypeLabel}"
                     TextColor="#5E461E" />
-            </Frame>
+            </Border>
 
             <Label
                 FontSize="15"
@@ -60,5 +57,5 @@
                 Text="{Binding WordDefinitionText}"
                 TextColor="#D7D0C5" />
         </VerticalStackLayout>
-    </Frame>
+    </Border>
 </ContentView>

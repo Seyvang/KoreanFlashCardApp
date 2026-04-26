@@ -12,13 +12,12 @@
     BackgroundColor="#F3EDE2">
 
     <Grid Padding="20,28,20,20" RowDefinitions="Auto,Auto,Auto,*">
-        <Frame
+        <Border
             Grid.Row="0"
-            BackgroundColor="#1D4D4F"
-            BorderColor="#1D4D4F"
-            CornerRadius="28"
-            HasShadow="False"
-            Padding="24">
+            Padding="24"
+            Background="#1D4D4F"
+            Stroke="#1D4D4F"
+            StrokeShape="RoundRectangle 28">
             <VerticalStackLayout Spacing="10">
                 <Label
                     FontAttributes="Bold"
@@ -35,16 +34,15 @@
                     Text="{Binding ModuleSummary}"
                     TextColor="#BDD3D0" />
             </VerticalStackLayout>
-        </Frame>
+        </Border>
 
-        <Frame
+        <Border
             Grid.Row="1"
             Margin="0,18,0,0"
             Padding="18"
-            BackgroundColor="#FBF8F2"
-            BorderColor="#D8CCBB"
-            CornerRadius="24"
-            HasShadow="False">
+            Background="#FBF8F2"
+            Stroke="#D8CCBB"
+            StrokeShape="RoundRectangle 24">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
                 <VerticalStackLayout Spacing="6">
                     <Label
@@ -71,16 +69,15 @@
                     TextColor="#FBF8F2"
                     VerticalOptions="Center" />
             </Grid>
-        </Frame>
+        </Border>
 
-        <Frame
+        <Border
             Grid.Row="2"
             Margin="0,18,0,0"
             Padding="16"
-            BackgroundColor="#F5D8D2"
-            BorderColor="#D09B8E"
-            CornerRadius="20"
-            HasShadow="False"
+            Background="#F5D8D2"
+            Stroke="#D09B8E"
+            StrokeShape="RoundRectangle 20"
             IsVisible="{Binding HasLoadError}">
             <VerticalStackLayout Spacing="10">
                 <Label
@@ -102,7 +99,7 @@
                     Text="Retry"
                     TextColor="#FFF7F4" />
             </VerticalStackLayout>
-        </Frame>
+        </Border>
 
         <CollectionView
             Grid.Row="3"
@@ -118,13 +115,12 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:StudyModule">
-                    <Frame
+                    <Border
                         Margin="0,0,0,16"
                         Padding="18"
-                        BackgroundColor="#FBF8F2"
-                        BorderColor="#D8CCBB"
-                        CornerRadius="24"
-                        HasShadow="False">
+                        Background="#FBF8F2"
+                        Stroke="#D8CCBB"
+                        StrokeShape="RoundRectangle 24">
                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
                             <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
                                 <Label
@@ -160,35 +156,33 @@
                                 Grid.ColumnSpan="2"
                                 ColumnDefinitions="*,*"
                                 Margin="0,18,0,0">
-                                <Frame
+                                <Border
                                     Grid.Column="0"
                                     Padding="12,10"
-                                    BackgroundColor="#EFE6D8"
-                                    BorderColor="#EFE6D8"
-                                    CornerRadius="16"
-                                    HasShadow="False">
+                                    Background="#EFE6D8"
+                                    Stroke="#EFE6D8"
+                                    StrokeShape="RoundRectangle 16">
                                     <Label
                                         FontSize="13"
                                         Text="{Binding ProgressLabel}"
                                         TextColor="#4A4137" />
-                                </Frame>
+                                </Border>
 
-                                <Frame
+                                <Border
                                     Grid.Column="1"
                                     Margin="10,0,0,0"
                                     Padding="12,10"
-                                    BackgroundColor="#E1ECE8"
-                                    BorderColor="#E1ECE8"
-                                    CornerRadius="16"
-                                    HasShadow="False">
+                                    Background="#E1ECE8"
+                                    Stroke="#E1ECE8"
+                                    StrokeShape="RoundRectangle 16">
                                     <Label
                                         FontSize="13"
                                         Text="{Binding DueLabel}"
                                         TextColor="#264E4A" />
-                                </Frame>
+                                </Border>
                             </Grid>
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

@@ -29,6 +29,16 @@ namespace KoreanFlashCardApp.Helpers
                 return;
             }
 
+            var sentencesByWordId = KoreanWordSentences.ListOfWordSentences
+                .GroupBy(x => x.WordSentence.Word_ID)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group
+                        .Select(x => x.WordSentence)
+                        .OrderByDescending(x => x.IsPrimary)
+                        .ThenBy(x => x.Sort_Order)
+                        .ToArray());
+
             foreach (var wordImport in KoreanWords.ListOfWords)
             {
                 foreach (var translationImport in wordImport.Translations)
@@ -37,6 +47,9 @@ namespace KoreanFlashCardApp.Helpers
                 }
 
                 wordImport.Word.Translations = wordImport.Translations.Select(x => x.Translation).ToArray();
+                wordImport.Word.Sentences = sentencesByWordId.TryGetValue(wordImport.Word.Word_ID, out var sentences)
+                    ? sentences
+                    : Array.Empty<WordSentence>();
                 Words.Add(wordImport.Word);
             }
         }
