@@ -117,13 +117,13 @@ namespace KoreanFlashCardApp.ViewModels
         {
             Modules.Clear();
 
-            foreach (var module in _flashCardProvider.BuildModules(_wordProvider.Words, _progressProvider.WordProgress))
+            foreach (var module in _flashCardProvider.BuildModules(_wordProvider.Words))
             {
                 Modules.Add(module);
             }
 
             ModuleSummary = $"{Modules.Count} modules across {_wordProvider.Words.Count} words";
-            var dueTodayCount = _flashCardProvider.GetDueTodayCount(_wordProvider.Words, _progressProvider.WordProgress);
+            var dueTodayCount = _flashCardProvider.GetDueTodayCount(_wordProvider.Words);
             HasDueToday = dueTodayCount > 0;
             StudyAllSummary = dueTodayCount == 0
                 ? "No words are due today."

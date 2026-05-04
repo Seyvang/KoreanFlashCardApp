@@ -8,19 +8,29 @@ namespace KoreanFlashCardApp.Helpers
         private readonly string progressFileName = "progress.json";
         private readonly string progressBackupFileName = "progress.backup.json";
         private List<WordProgress> wordProgress;
+        private Dictionary<int, WordProgress> mappedWordProgress;
 
         public ProgressProvider()
         {
             wordProgress = new List<WordProgress>();
+            mappedWordProgress = new Dictionary<int, WordProgress>();
         }
 
         public IReadOnlyList<WordProgress> WordProgress => wordProgress;
+
+        public IReadOnlyDictionary<int, WordProgress> MappedWordProgress => mappedWordProgress;
 
         public async Task SaveProgressAsync(int word_ID, bool answeredCorrectly)
         {
             var matchedWord = wordProgress.FirstOrDefault(x => x.Word_ID == word_ID);
             if (matchedWord != null)
             {
+                // shouldn't be able to save a word for something that has been purposely skipped
+                if (matchedWord.SkipWord)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 matchedWord.Number_Correct = answeredCorrectly ? matchedWord.Number_Correct + 1 : 0;
                 matchedWord.Next_Test_Date = answeredCorrectly
                     ? HandleDateCalculation(matchedWord.Number_Correct)
@@ -33,6 +43,26 @@ namespace KoreanFlashCardApp.Helpers
                 wordProgress.Add(new WordProgress(0, 0, word_ID, nextTestDate, numberCorrect));
             }
 
+            RebuildMappedWordProgress();
+            await SaveAsync();
+        }
+
+        public async Task SkipWordProgress(int word_ID)
+        {
+            var matchedWord = wordProgress.FirstOrDefault(x => x.Word_ID == word_ID);
+
+
+            if (matchedWord != null)
+            {
+                matchedWord.SkipWord = true;
+                matchedWord.Number_Correct = -1;
+            }
+            else
+            {
+                wordProgress.Add(new WordProgress(0, 0, word_ID, DateTime.MaxValue, -1, true));
+            }
+
+            RebuildMappedWordProgress();
             await SaveAsync();
         }
 
@@ -55,10 +85,12 @@ namespace KoreanFlashCardApp.Helpers
             if (loadedProgress is not null)
             {
                 wordProgress = loadedProgress;
+                RebuildMappedWordProgress();
                 return;
             }
 
             wordProgress = new List<WordProgress>();
+            RebuildMappedWordProgress();
         }
 
         public void LoadProgress()
@@ -68,6 +100,14 @@ namespace KoreanFlashCardApp.Helpers
 
             var loadedProgress = TryLoad(filePath) ?? TryLoad(backupFilePath);
             wordProgress = loadedProgress ?? new List<WordProgress>();
+            RebuildMappedWordProgress();
+        }
+
+        private void RebuildMappedWordProgress()
+        {
+            mappedWordProgress = wordProgress
+                .GroupBy(x => x.Word_ID)
+                .ToDictionary(group => group.Key, group => group.OrderByDescending(x => x.Next_Test_Date).First());
         }
 
         private static DateTime HandleDateCalculation(int numberCorrect)

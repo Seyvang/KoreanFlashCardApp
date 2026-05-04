@@ -5,13 +5,17 @@ namespace KoreanFlashCardApp.Helpers
     public class FlashCardProvider
     {
         public const int ModuleSize = 15;
+        private readonly ProgressProvider _progressProvider;
 
-        public IReadOnlyList<StudyModule> BuildModules(IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries)
+        public FlashCardProvider(ProgressProvider progressProvider)
+        {
+            _progressProvider = progressProvider;
+        }
+
+        public IReadOnlyList<StudyModule> BuildModules(IList<Word> allWords)
         {
             var modules = new List<StudyModule>();
-            var progressLookup = progressEntries
-                .GroupBy(x => x.Word_ID)
-                .ToDictionary(group => group.Key, group => group.OrderByDescending(x => x.Next_Test_Date).First());
+            var progressLookup = _progressProvider.MappedWordProgress;
 
             for (var startIndex = 0; startIndex < allWords.Count; startIndex += ModuleSize)
             {
@@ -21,9 +25,12 @@ namespace KoreanFlashCardApp.Helpers
                     continue;
                 }
 
-                var studiedCount = moduleWords.Count(word => progressLookup.ContainsKey(word.Word_ID));
+                var studiedCount = moduleWords.Count(word =>
+                    progressLookup.TryGetValue(word.Word_ID, out var progress) &&
+                    !progress.SkipWord);
                 var dueCount = moduleWords.Count(word =>
                     progressLookup.TryGetValue(word.Word_ID, out var progress) &&
+                    !progress.SkipWord &&
                     progress.Next_Test_Date.Date <= DateTime.Today);
 
                 modules.Add(new StudyModule(
@@ -37,13 +44,12 @@ namespace KoreanFlashCardApp.Helpers
             return modules;
         }
 
-        public IReadOnlyList<FlashCard> BuildSession(IList<Word> moduleWords, IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries)
+        public IReadOnlyList<FlashCard> BuildSession(IList<Word> moduleWords, IList<Word> allWords)
         {
-            var progressLookup = progressEntries
-                .GroupBy(x => x.Word_ID)
-                .ToDictionary(group => group.Key, group => group.OrderByDescending(x => x.Next_Test_Date).First());
+            var progressLookup = _progressProvider.MappedWordProgress;
 
             return moduleWords
+                .Where(word => !progressLookup.TryGetValue(word.Word_ID, out var progress) || !progress.SkipWord)
                 .OrderBy(word => GetPriority(word, progressLookup))
                 .ThenBy(word => progressLookup.TryGetValue(word.Word_ID, out var progress)
                     ? progress.Next_Test_Date
@@ -53,15 +59,14 @@ namespace KoreanFlashCardApp.Helpers
                 .ToList();
         }
 
-        public IList<Word> GetDueTodayWords(IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries, int maxNumberOfWords = 0)
+        public IList<Word> GetDueTodayWords(IList<Word> allWords, int maxNumberOfWords = 0)
         {
-            var progressLookup = progressEntries
-                .GroupBy(x => x.Word_ID)
-                .ToDictionary(group => group.Key, group => group.OrderByDescending(x => x.Next_Test_Date).First());
+            var progressLookup = _progressProvider.MappedWordProgress;
 
             var returnWords = allWords
                 .Where(word =>
                     progressLookup.TryGetValue(word.Word_ID, out var progress) &&
+                    !progress.SkipWord &&
                     progress.Next_Test_Date.Date <= DateTime.Today)
                 .OrderBy(word => progressLookup[word.Word_ID].Next_Test_Date)
                 .ThenBy(word => word.Word_ID);
@@ -76,15 +81,21 @@ namespace KoreanFlashCardApp.Helpers
             }
         }
 
-        public int GetDueTodayCount(IList<Word> allWords, IReadOnlyList<WordProgress> progressEntries)
+        public int GetDueTodayCount(IList<Word> allWords)
         {
-            return GetDueTodayWords(allWords, progressEntries).Count;
+            return GetDueTodayWords(allWords).Count;
         }
 
         public IList<Word> GetModuleWords(IList<Word> allWords, int moduleNumber)
         {
             var startIndex = Math.Max(0, (moduleNumber - 1) * ModuleSize);
-            return allWords.Skip(startIndex).Take(ModuleSize).ToList();
+            var progressLookup = _progressProvider.MappedWordProgress;
+
+            return allWords
+                .Skip(startIndex)
+                .Take(ModuleSize)
+                .Where(word => !progressLookup.TryGetValue(word.Word_ID, out var progress) || !progress.SkipWord)
+                .ToList();
         }
 
         private static int GetPriority(Word word, IReadOnlyDictionary<int, WordProgress> progressLookup)

@@ -6,12 +6,52 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <Color x:Key="AppPaper">#F3EDE2</Color>
+    <Color x:Key="AppSurface">#FBF8F2</Color>
+    <Color x:Key="AppSurfaceRaised">#F5F1EA</Color>
+    <Color x:Key="AppSurfaceMuted">#E5DBCE</Color>
+    <Color x:Key="AppSurfaceInset">#EFE6D8</Color>
+    <Color x:Key="AppSurfaceDisabled">#ECE7DE</Color>
+    <Color x:Key="AppDivider">#D8CCBB</Color>
+    <Color x:Key="AppDividerStrong">#D7D0C5</Color>
+    <Color x:Key="AppBorderMuted">#CDBEA7</Color>
+    <Color x:Key="AppBorderDisabled">#D4C8B6</Color>
+
+    <Color x:Key="AppInk">#1E1B18</Color>
+    <Color x:Key="AppInkSoft">#3A332D</Color>
+    <Color x:Key="AppText">#544B40</Color>
+    <Color x:Key="AppTextSubtle">#645A4E</Color>
+    <Color x:Key="AppTextMuted">#6C6256</Color>
+    <Color x:Key="AppTextFaint">#5F574D</Color>
+    <Color x:Key="AppTextOnDark">#FFF9F2</Color>
+    <Color x:Key="AppTextOnDarkSoft">#F9F6F0</Color>
+    <Color x:Key="AppTextOnPrimary">#DCE8E6</Color>
+    <Color x:Key="AppTextOnPrimaryMuted">#BDD3D0</Color>
+    <Color x:Key="AppTextOnSuccess">#F5FFF7</Color>
+    <Color x:Key="AppTextOnDanger">#FFF7F4</Color>
+    <Color x:Key="AppTextOnInkMuted">#C9C1B6</Color>
+
+    <Color x:Key="AppPrimary">#1D4D4F</Color>
+    <Color x:Key="AppPrimarySoft">#E1ECE8</Color>
+    <Color x:Key="AppPrimaryText">#264E4A</Color>
+    <Color x:Key="AppSuccess">#2C7A58</Color>
+    <Color x:Key="AppSuccessSoft">#D9F2E4</Color>
+    <Color x:Key="AppWarning">#C56E4A</Color>
+    <Color x:Key="AppWarningText">#9E6D3B</Color>
+    <Color x:Key="AppGoldSoft">#F0E4C6</Color>
+    <Color x:Key="AppGoldText">#5E461E</Color>
+    <Color x:Key="AppDanger">#9E3B2E</Color>
+    <Color x:Key="AppDangerDeep">#692E24</Color>
+    <Color x:Key="AppDangerSoft">#F5D8D2</Color>
+    <Color x:Key="AppDangerBorder">#D09B8E</Color>
+    <Color x:Key="AppBrownText">#4A4137</Color>
+
+    <Color x:Key="Primary">#1D4D4F</Color>
+    <Color x:Key="PrimaryDark">#E1ECE8</Color>
+    <Color x:Key="PrimaryDarkText">#1E1B18</Color>
+    <Color x:Key="Secondary">#E5DBCE</Color>
+    <Color x:Key="SecondaryDarkText">#264E4A</Color>
+    <Color x:Key="Tertiary">#C56E4A</Color>
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
@@ -31,6 +71,20 @@
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="AppPaperBrush" Color="{StaticResource AppPaper}"/>
+    <SolidColorBrush x:Key="AppSurfaceBrush" Color="{StaticResource AppSurface}"/>
+    <SolidColorBrush x:Key="AppSurfaceMutedBrush" Color="{StaticResource AppSurfaceMuted}"/>
+    <SolidColorBrush x:Key="AppSurfaceInsetBrush" Color="{StaticResource AppSurfaceInset}"/>
+    <SolidColorBrush x:Key="AppDividerBrush" Color="{StaticResource AppDivider}"/>
+    <SolidColorBrush x:Key="AppInkBrush" Color="{StaticResource AppInk}"/>
+    <SolidColorBrush x:Key="AppPrimaryBrush" Color="{StaticResource AppPrimary}"/>
+    <SolidColorBrush x:Key="AppPrimarySoftBrush" Color="{StaticResource AppPrimarySoft}"/>
+    <SolidColorBrush x:Key="AppSuccessBrush" Color="{StaticResource AppSuccess}"/>
+    <SolidColorBrush x:Key="AppWarningBrush" Color="{StaticResource AppWarning}"/>
+    <SolidColorBrush x:Key="AppGoldSoftBrush" Color="{StaticResource AppGoldSoft}"/>
+    <SolidColorBrush x:Key="AppDangerBrush" Color="{StaticResource AppDanger}"/>
+    <SolidColorBrush x:Key="AppDangerSoftBrush" Color="{StaticResource AppDangerSoft}"/>
+    <SolidColorBrush x:Key="AppDangerBorderBrush" Color="{StaticResource AppDangerBorder}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
 

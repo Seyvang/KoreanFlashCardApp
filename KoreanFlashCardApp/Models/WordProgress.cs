@@ -15,14 +15,16 @@ namespace KoreanFlashCardApp.Models
 
         public DateTime Next_Test_Date { get; set; }
         public int Number_Correct { get; set; }
+        public bool SkipWord { get; set; }
 
-        public WordProgress(int word_Progress_ID, int progress_ID, int word_ID, DateTime next_Test_Date, int number_Correct)
+        public WordProgress(int word_Progress_ID, int progress_ID, int word_ID, DateTime next_Test_Date, int number_Correct, bool skip_Word = false)
         {
             Word_Progress_ID = word_Progress_ID;
             Progress_ID = progress_ID;
             Word_ID = word_ID;
             Next_Test_Date = next_Test_Date;
             Number_Correct = number_Correct;
+            SkipWord = skip_Word;
         }
     }
 }

@@ -11,6 +11,16 @@ namespace KoreanFlashCardApp
         {
             InitializeComponent();
             _viewModel = viewModel;
+            _viewModel.ConfirmSkipWordAsync = ConfirmSkipWordAsync;
+        }
+
+        private Task<bool> ConfirmSkipWordAsync(Models.Word word)
+        {
+            return DisplayAlert(
+                "Skip word?",
+                $"Hide {word.Word_Name} from future study sessions?",
+                "Skip",
+                "Cancel");
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)

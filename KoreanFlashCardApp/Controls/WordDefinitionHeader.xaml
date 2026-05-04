@@ -8,28 +8,28 @@
 
     <Border
         Padding="20"
-        Background="#1E1B18"
-        Stroke="#1E1B18"
+        Background="{StaticResource AppInkBrush}"
+        Stroke="{StaticResource AppInkBrush}"
         StrokeShape="RoundRectangle 28">
         <VerticalStackLayout Spacing="10">
             <Grid ColumnDefinitions="Auto,*">
                 <Border
                     Padding="10,6"
-                    Background="#2C7A58"
-                    Stroke="#2C7A58"
+                    Background="{StaticResource AppSuccessBrush}"
+                    Stroke="{StaticResource AppSuccessBrush}"
                     StrokeShape="RoundRectangle 14">
                     <Label
                         FontAttributes="Bold"
                         FontSize="12"
                         Text="{Binding ModuleBadge}"
-                        TextColor="#F5FFF7" />
+                        TextColor="{StaticResource AppTextOnSuccess}" />
                 </Border>
                 <Label
                     Grid.Column="1"
                     FontSize="13"
                     HorizontalTextAlignment="End"
                     Text="{Binding CounterLabel}"
-                    TextColor="#C9C1B6"
+                    TextColor="{StaticResource AppTextOnInkMuted}"
                     VerticalTextAlignment="Center" />
             </Grid>
 
@@ -37,25 +37,25 @@
                 FontAttributes="Bold"
                 FontSize="36"
                 Text="{Binding CurrentCard.TargetWord.Word_Name}"
-                TextColor="#FFF9F2" />
+                TextColor="{StaticResource AppTextOnDark}" />
 
             <Border
                 Padding="10,6"
-                Background="#F0E4C6"
-                Stroke="#F0E4C6"
+                Background="{StaticResource AppGoldSoftBrush}"
+                Stroke="{StaticResource AppGoldSoftBrush}"
                 StrokeShape="RoundRectangle 14"
                 HorizontalOptions="Start">
                 <Label
                     FontSize="12"
                     Text="{Binding WordTypeLabel}"
-                    TextColor="#5E461E" />
+                    TextColor="{StaticResource AppGoldText}" />
             </Border>
 
             <Label
                 FontSize="15"
                 LineBreakMode="WordWrap"
                 Text="{Binding WordDefinitionText}"
-                TextColor="#D7D0C5" />
+                TextColor="{StaticResource AppDividerStrong}" />
         </VerticalStackLayout>
     </Border>
 </ContentView>

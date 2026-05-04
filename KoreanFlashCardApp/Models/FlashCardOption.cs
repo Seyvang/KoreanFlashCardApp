@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 
 namespace KoreanFlashCardApp.Models
@@ -34,20 +35,20 @@ namespace KoreanFlashCardApp.Models
             {
                 if (!IsRevealed)
                 {
-                    return Color.FromArgb("#F5F1EA");
+                    return GetThemeColor("AppSurfaceRaised");
                 }
 
                 if (IsCorrect)
                 {
-                    return Color.FromArgb("#D9F2E4");
+                    return GetThemeColor("AppSuccessSoft");
                 }
 
                 if (IsSelected)
                 {
-                    return Color.FromArgb("#F5D8D2");
+                    return GetThemeColor("AppDangerSoft");
                 }
 
-                return Color.FromArgb("#ECE7DE");
+                return GetThemeColor("AppSurfaceDisabled");
             }
         }
 
@@ -57,24 +58,24 @@ namespace KoreanFlashCardApp.Models
             {
                 if (!IsRevealed)
                 {
-                    return IsSelected ? Color.FromArgb("#1D4D4F") : Color.FromArgb("#CDBEA7");
+                    return IsSelected ? GetThemeColor("AppPrimary") : GetThemeColor("AppBorderMuted");
                 }
 
                 if (IsCorrect)
                 {
-                    return Color.FromArgb("#2C7A58");
+                    return GetThemeColor("AppSuccess");
                 }
 
                 if (IsSelected)
                 {
-                    return Color.FromArgb("#9E3B2E");
+                    return GetThemeColor("AppDanger");
                 }
 
-                return Color.FromArgb("#D4C8B6");
+                return GetThemeColor("AppBorderDisabled");
             }
         }
 
-        public Color TextColor => Color.FromArgb("#1E1B18");
+        public Color TextColor => GetThemeColor("AppInk");
 
         partial void OnIsSelectedChanged(bool value) => NotifyVisualState();
 
@@ -87,6 +88,17 @@ namespace KoreanFlashCardApp.Models
             OnPropertyChanged(nameof(BackgroundColor));
             OnPropertyChanged(nameof(BorderColor));
             OnPropertyChanged(nameof(TextColor));
+        }
+
+        private static Color GetThemeColor(string key)
+        {
+            if (Application.Current?.Resources.TryGetValue(key, out var value) == true &&
+                value is Color color)
+            {
+                return color;
+            }
+
+            return Colors.Transparent;
         }
     }
 }

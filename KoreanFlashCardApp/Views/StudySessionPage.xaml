@@ -8,19 +8,19 @@
     xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
     x:Name="SessionPageRoot"
     x:DataType="viewModels:StudySessionPageViewModel"
-    BackgroundColor="#F3EDE2"
+    BackgroundColor="{StaticResource AppPaper}"
     Shell.NavBarIsVisible="False">
 
     <Grid Padding="20,24,20,20" RowDefinitions="Auto,Auto,*,Auto">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
             <Button
                 Padding="16,10"
-                BackgroundColor="#E5DBCE"
+                BackgroundColor="{StaticResource AppSurfaceMuted}"
                 Command="{Binding ReturnToModulesCommand}"
                 CornerRadius="18"
                 FontAttributes="Bold"
                 Text="Modules"
-                TextColor="#3A332D" />
+                TextColor="{StaticResource AppInkSoft}" />
             <VerticalStackLayout
                 Grid.Column="1"
                 Margin="16,0,0,0"
@@ -29,11 +29,11 @@
                     FontAttributes="Bold"
                     FontSize="26"
                     Text="{Binding SessionTitle}"
-                    TextColor="#1E1B18" />
+                    TextColor="{StaticResource AppInk}" />
                 <Label
                     FontSize="14"
                     Text="{Binding SessionSubtitle}"
-                    TextColor="#645A4E" />
+                    TextColor="{StaticResource AppTextSubtle}" />
             </VerticalStackLayout>
         </Grid>
 
@@ -49,7 +49,7 @@
                         FontAttributes="Bold"
                         FontSize="18"
                         Text="Select the best English definition"
-                        TextColor="#1E1B18" />
+                        TextColor="{StaticResource AppInk}" />
 
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding Options}" Spacing="12">
                         <BindableLayout.ItemTemplate>
@@ -73,52 +73,67 @@
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
 
+                    <BoxView
+                        Margin="6,4"
+                        BackgroundColor="{StaticResource AppDivider}"
+                        HeightRequest="1"
+                        HorizontalOptions="Fill" />
+
+                    <Button
+                        Padding="18,12"
+                        BackgroundColor="{StaticResource AppSurfaceMuted}"
+                        Command="{Binding SkipWordCommand}"
+                        CornerRadius="18"
+                        FontAttributes="Bold"
+                        Text="I already know this"
+                        TextColor="{StaticResource AppInkSoft}" />
+
                     <Border
                         Padding="18"
-                        Background="#FBF8F2"
-                        Stroke="#D8CCBB"
-                        StrokeShape="RoundRectangle 22"
-                        IsVisible="{Binding ShowFeedback}">
+                        Background="{StaticResource AppSurfaceBrush}"
+                        IsVisible="{Binding ShowFeedback}"
+                        Stroke="{StaticResource AppDividerBrush}"
+                        StrokeShape="RoundRectangle 22">
                         <VerticalStackLayout Spacing="12">
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="18"
                                 Text="{Binding FeedbackTitle}"
-                                TextColor="#1E1B18" />
+                                TextColor="{StaticResource AppInk}" />
                             <Label
                                 FontSize="15"
                                 Text="{Binding FeedbackBody}"
-                                TextColor="#544B40" />
+                                TextColor="{StaticResource AppText}" />
                             <Border
                                 Padding="16"
-                                Background="#F3EDE2"
-                                Stroke="#D8CCBB"
-                                StrokeShape="RoundRectangle 18"
-                                IsVisible="{Binding HasExampleSentence}">
+                                Background="{StaticResource AppPaperBrush}"
+                                IsVisible="{Binding HasExampleSentence}"
+                                Stroke="{StaticResource AppDividerBrush}"
+                                StrokeShape="RoundRectangle 18">
                                 <VerticalStackLayout Spacing="8">
                                     <Label
                                         FontAttributes="Bold"
                                         FontSize="13"
                                         Text="Example sentence"
-                                        TextColor="#6C6256" />
+                                        TextColor="{StaticResource AppTextMuted}" />
                                     <Label
                                         FontSize="17"
                                         Text="{Binding ExampleSentenceText}"
-                                        TextColor="#1E1B18" />
+                                        TextColor="{StaticResource AppInk}" />
                                     <Label
                                         FontSize="14"
                                         Text="{Binding ExampleSentenceTranslation}"
-                                        TextColor="#645A4E" />
+                                        TextColor="{StaticResource AppTextSubtle}" />
                                 </VerticalStackLayout>
                             </Border>
                             <Button
                                 Padding="18,12"
-                                BackgroundColor="#1D4D4F"
+                                BackgroundColor="{StaticResource AppPrimary}"
                                 Command="{Binding NextCommand}"
                                 CornerRadius="18"
                                 FontAttributes="Bold"
                                 Text="{Binding NextButtonText}"
-                                TextColor="#FBF8F2" />
+                                TextColor="{StaticResource AppSurface}" />
                         </VerticalStackLayout>
                     </Border>
                 </VerticalStackLayout>
@@ -126,28 +141,28 @@
                 <Border
                     Margin="0,18,0,0"
                     Padding="24"
-                    Background="#FBF8F2"
-                    Stroke="#D8CCBB"
-                    StrokeShape="RoundRectangle 26"
-                    IsVisible="{Binding IsSessionComplete}">
+                    Background="{StaticResource AppSurfaceBrush}"
+                    IsVisible="{Binding IsSessionComplete}"
+                    Stroke="{StaticResource AppDividerBrush}"
+                    StrokeShape="RoundRectangle 26">
                     <VerticalStackLayout Spacing="12">
                         <Label
                             FontAttributes="Bold"
                             FontSize="28"
                             Text="{Binding CompletionTitle}"
-                            TextColor="#1E1B18" />
+                            TextColor="{StaticResource AppInk}" />
                         <Label
                             FontSize="16"
                             Text="{Binding CompletionSummary}"
-                            TextColor="#544B40" />
+                            TextColor="{StaticResource AppText}" />
                         <Button
                             Padding="18,12"
-                            BackgroundColor="#C56E4A"
+                            BackgroundColor="{StaticResource AppWarning}"
                             Command="{Binding ReturnToModulesCommand}"
                             CornerRadius="18"
                             FontAttributes="Bold"
                             Text="Back to modules"
-                            TextColor="#FFF9F2" />
+                            TextColor="{StaticResource AppTextOnDark}" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
@@ -159,6 +174,6 @@
             FontSize="13"
             HorizontalTextAlignment="Center"
             Text="{Binding ProgressSummary}"
-            TextColor="#6C6256" />
+            TextColor="{StaticResource AppTextMuted}" />
     </Grid>
 </controls:BasePage>

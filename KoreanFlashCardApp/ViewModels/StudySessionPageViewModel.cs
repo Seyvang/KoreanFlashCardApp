@@ -13,6 +13,7 @@ namespace KoreanFlashCardApp.ViewModels
         private readonly ProgressProvider _progressProvider;
         private readonly FlashCardProvider _flashCardProvider;
         private readonly List<FlashCard> _sessionCards = new();
+        private bool isCorrect = false;
 
         public StudySessionPageViewModel(
             IWordProvider wordProvider,
@@ -25,6 +26,8 @@ namespace KoreanFlashCardApp.ViewModels
         }
 
         public ObservableCollection<FlashCardOption> Options { get; } = new();
+
+        public Func<Word, Task<bool>>? ConfirmSkipWordAsync { get; set; }
 
         [ObservableProperty]
         private int moduleNumber;
@@ -116,7 +119,7 @@ namespace KoreanFlashCardApp.ViewModels
 
             var moduleWords = _flashCardProvider.GetModuleWords(_wordProvider.Words, moduleNumber);
             _sessionCards.Clear();
-            _sessionCards.AddRange(_flashCardProvider.BuildSession(moduleWords, _wordProvider.Words, _progressProvider.WordProgress));
+            _sessionCards.AddRange(_flashCardProvider.BuildSession(moduleWords, _wordProvider.Words));
 
             TotalCards = _sessionCards.Count;
             SessionTitle = $"Module {moduleNumber:00}";
@@ -146,9 +149,9 @@ namespace KoreanFlashCardApp.ViewModels
             FeedbackTitle = string.Empty;
             FeedbackBody = string.Empty;
 
-            var dueTodayWords = _flashCardProvider.GetDueTodayWords(_wordProvider.Words, _progressProvider.WordProgress, 15);
+            var dueTodayWords = _flashCardProvider.GetDueTodayWords(_wordProvider.Words, 15);
             _sessionCards.Clear();
-            _sessionCards.AddRange(_flashCardProvider.BuildSession(dueTodayWords, _wordProvider.Words, _progressProvider.WordProgress));
+            _sessionCards.AddRange(_flashCardProvider.BuildSession(dueTodayWords, _wordProvider.Words));
 
             TotalCards = _sessionCards.Count;
             SessionTitle = "Study All";
@@ -189,6 +192,7 @@ namespace KoreanFlashCardApp.ViewModels
 
             if (option.IsCorrect)
             {
+                isCorrect = true;
                 CorrectAnswers++;
                 FeedbackTitle = "Correct";
                 FeedbackBody = $"{CurrentCard.TargetWord.Word_Name} means {CurrentCard.TargetWord.PrimaryDefinition}.";
@@ -212,6 +216,45 @@ namespace KoreanFlashCardApp.ViewModels
                 return Task.CompletedTask;
             }
 
+            AdvanceToNextCard();
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand]
+        private async Task SkipWord()
+        {
+            if (CurrentCard is null)
+            {
+                return;
+            }
+
+            var shouldSkip = ConfirmSkipWordAsync is null ||
+                await ConfirmSkipWordAsync(CurrentCard.TargetWord);
+
+            if (!shouldSkip)
+            {
+                return;
+            }
+
+            await _progressProvider.SkipWordProgress(CurrentCard.TargetWord.Word_ID);
+            TotalCards--;
+            if (IsAnswerRevealed && isCorrect)
+            {
+                CorrectAnswers--;
+            }
+
+            AdvanceToNextCard();
+        }
+
+        [RelayCommand]
+        private Task ReturnToModulesAsync()
+        {
+            return Shell.Current.GoToAsync("//MainPage");
+        }
+
+        private void AdvanceToNextCard()
+        {
+            isCorrect = false;
             if (CurrentCardIndex >= _sessionCards.Count - 1)
             {
                 CurrentCard = null;
@@ -220,18 +263,11 @@ namespace KoreanFlashCardApp.ViewModels
                 FeedbackTitle = string.Empty;
                 FeedbackBody = string.Empty;
                 NotifyComputedState();
-                return Task.CompletedTask;
+                return;
             }
 
             CurrentCardIndex++;
             LoadCurrentCard();
-            return Task.CompletedTask;
-        }
-
-        [RelayCommand]
-        private Task ReturnToModulesAsync()
-        {
-            return Shell.Current.GoToAsync("//MainPage");
         }
 
         private void LoadCurrentCard()
