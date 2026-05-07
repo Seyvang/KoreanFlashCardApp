@@ -17,6 +17,10 @@ namespace KoreanFlashCardApp.Models
         public int Number_Correct { get; set; }
         public bool SkipWord { get; set; }
 
+        public WordProgress()
+        {
+        }
+
         public WordProgress(int word_Progress_ID, int progress_ID, int word_ID, DateTime next_Test_Date, int number_Correct, bool skip_Word = false)
         {
             Word_Progress_ID = word_Progress_ID;

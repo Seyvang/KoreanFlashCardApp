@@ -20,6 +20,8 @@ namespace KoreanFlashCardApp.Helpers
 
         public IReadOnlyDictionary<int, WordProgress> MappedWordProgress => mappedWordProgress;
 
+        public string ProgressFileName => progressFileName;
+
         public async Task SaveProgressAsync(int word_ID, bool answeredCorrectly)
         {
             var matchedWord = wordProgress.FirstOrDefault(x => x.Word_ID == word_ID);
@@ -76,6 +78,27 @@ namespace KoreanFlashCardApp.Helpers
             await File.WriteAllTextAsync(backupFilePath, json);
         }
 
+        public async Task<string> ExportProgressToDownloadsAsync()
+        {
+            await SaveAsync();
+
+            var json = JsonSerializer.Serialize(wordProgress, new JsonSerializerOptions { WriteIndented = true });
+            return await WriteExportAsync(json);
+        }
+
+        public async Task ImportProgressAsync(FileResult fileResult)
+        {
+            await using var stream = await fileResult.OpenReadAsync();
+            using var reader = new StreamReader(stream);
+            var json = await reader.ReadToEndAsync();
+            var importedProgress = JsonSerializer.Deserialize<List<WordProgress>>(json)
+                ?? throw new InvalidOperationException("Selected file does not contain progress data.");
+
+            wordProgress = importedProgress;
+            RebuildMappedWordProgress();
+            await SaveAsync();
+        }
+
         public async Task LoadProgressAsync()
         {
             var filePath = Path.Combine(FileSystem.AppDataDirectory, progressFileName);
@@ -114,6 +137,59 @@ namespace KoreanFlashCardApp.Helpers
         {
             var dayMultiplier = Math.Pow(2, Math.Max(0, numberCorrect - 1));
             return DateTime.Today.AddDays(dayMultiplier);
+        }
+
+        private static async Task<string> WriteExportAsync(string json)
+        {
+#if WINDOWS
+            var downloadsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+            Directory.CreateDirectory(downloadsPath);
+
+            var exportPath = Path.Combine(downloadsPath, "progress.json");
+            await File.WriteAllTextAsync(exportPath, json);
+            return exportPath;
+#elif MACCATALYST
+            var downloadsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+            Directory.CreateDirectory(downloadsPath);
+
+            var exportPath = Path.Combine(downloadsPath, "progress.json");
+            await File.WriteAllTextAsync(exportPath, json);
+            return exportPath;
+#elif ANDROID
+            var resolver = Android.App.Application.Context.ContentResolver
+                ?? throw new InvalidOperationException("Android content resolver is unavailable.");
+
+            var values = new Android.Content.ContentValues();
+            values.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, "progress.json");
+            values.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "application/json");
+
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Q)
+            {
+                values.Put(
+                    Android.Provider.MediaStore.IMediaColumns.RelativePath,
+                    Android.OS.Environment.DirectoryDownloads);
+            }
+
+            var collectionUri = Android.Provider.MediaStore.Downloads.ExternalContentUri
+                ?? throw new InvalidOperationException("Android Downloads storage is unavailable.");
+            var itemUri = resolver.Insert(collectionUri, values)
+                ?? throw new InvalidOperationException("Could not create progress.json in Downloads.");
+
+            await using var stream = resolver.OpenOutputStream(itemUri)
+                ?? throw new InvalidOperationException("Could not open progress.json for writing.");
+            await using var writer = new StreamWriter(stream);
+            await writer.WriteAsync(json);
+
+            return itemUri.ToString();
+#else
+            var exportPath = Path.Combine(FileSystem.AppDataDirectory, "progress.json");
+            await File.WriteAllTextAsync(exportPath, json);
+            return exportPath;
+#endif
         }
 
         private static async Task<List<WordProgress>?> TryLoadAsync(string filePath)

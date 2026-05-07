@@ -11,7 +11,7 @@
     x:Name="RootPage"
     BackgroundColor="{StaticResource AppPaper}">
 
-    <Grid Padding="20,28,20,20" RowDefinitions="Auto,Auto,Auto,*">
+    <Grid Padding="20,28,20,20" RowDefinitions="Auto,Auto,Auto,Auto,*">
         <Border
             Grid.Row="0"
             Padding="24"
@@ -74,6 +74,61 @@
         <Border
             Grid.Row="2"
             Margin="0,18,0,0"
+            Padding="18"
+            Background="{StaticResource AppSurfaceBrush}"
+            Stroke="{StaticResource AppDividerBrush}"
+            StrokeShape="RoundRectangle 24">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14" RowDefinitions="Auto,Auto">
+                <VerticalStackLayout Spacing="6">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Progress File"
+                        TextColor="{StaticResource AppInk}" />
+                    <Label
+                        FontSize="13"
+                        LineBreakMode="WordWrap"
+                        Text="Move progress.json through Downloads."
+                        TextColor="{StaticResource AppText}" />
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout
+                    Grid.Column="1"
+                    Spacing="8"
+                    VerticalOptions="Center">
+                    <Button
+                        BackgroundColor="{StaticResource AppSurfaceInset}"
+                        Command="{Binding ImportProgressCommand}"
+                        CornerRadius="16"
+                        FontAttributes="Bold"
+                        Padding="14,9"
+                        Text="Import"
+                        TextColor="{StaticResource AppBrownText}" />
+                    <Button
+                        BackgroundColor="{StaticResource AppSuccess}"
+                        Command="{Binding ExportProgressCommand}"
+                        CornerRadius="16"
+                        FontAttributes="Bold"
+                        Padding="14,9"
+                        Text="Export"
+                        TextColor="{StaticResource AppTextOnSuccess}" />
+                </HorizontalStackLayout>
+
+                <Label
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0,12,0,0"
+                    FontSize="12"
+                    IsVisible="{Binding HasProgressTransferStatus}"
+                    LineBreakMode="WordWrap"
+                    Text="{Binding ProgressTransferStatus}"
+                    TextColor="{StaticResource AppTextMuted}" />
+            </Grid>
+        </Border>
+
+        <Border
+            Grid.Row="3"
+            Margin="0,18,0,0"
             Padding="16"
             Background="{StaticResource AppDangerSoftBrush}"
             Stroke="{StaticResource AppDangerBorderBrush}"
@@ -102,7 +157,7 @@
         </Border>
 
         <CollectionView
-            Grid.Row="3"
+            Grid.Row="4"
             ItemsSource="{Binding Modules}"
             Margin="0,20,0,0"
             SelectionMode="None">
@@ -188,7 +243,7 @@
         </CollectionView>
 
         <Grid
-            Grid.RowSpan="4"
+            Grid.RowSpan="5"
             BackgroundColor="{StaticResource AppDividerStrong}"
             IsVisible="{Binding IsLoading}"
             Opacity="0.92">

@@ -51,11 +51,21 @@ namespace KoreanFlashCardApp.ViewModels
         [ObservableProperty]
         private string loadError = string.Empty;
 
+        [ObservableProperty]
+        private string progressTransferStatus = string.Empty;
+
+        [ObservableProperty]
+        private bool isTransferringProgress;
+
         public bool HasModules => Modules.Count > 0;
 
         public bool HasLoadError => !string.IsNullOrWhiteSpace(LoadError);
 
+        public bool HasProgressTransferStatus => !string.IsNullOrWhiteSpace(ProgressTransferStatus);
+
         public bool CanStartStudying => !IsLoading && !HasLoadError;
+
+        public bool CanTransferProgress => !IsLoading && !IsTransferringProgress;
 
         public override void OnAppearing()
         {
@@ -78,6 +88,67 @@ namespace KoreanFlashCardApp.ViewModels
         private Task StudyAllAsync()
         {
             return Shell.Current.GoToAsync($"{nameof(StudySessionPage)}?studyMode=due");
+        }
+
+        [RelayCommand(CanExecute = nameof(CanTransferProgress))]
+        private async Task ExportProgressAsync()
+        {
+            try
+            {
+                IsTransferringProgress = true;
+                ProgressTransferStatus = "Exporting progress...";
+
+                var exportPath = await _progressProvider.ExportProgressToDownloadsAsync();
+                ProgressTransferStatus = $"Exported progress.json to {exportPath}";
+            }
+            catch (Exception ex)
+            {
+                ProgressTransferStatus = $"Export failed: {ex.Message}";
+            }
+            finally
+            {
+                IsTransferringProgress = false;
+            }
+        }
+
+        [RelayCommand(CanExecute = nameof(CanTransferProgress))]
+        private async Task ImportProgressAsync()
+        {
+            try
+            {
+                IsTransferringProgress = true;
+                ProgressTransferStatus = "Choose a progress.json file to import.";
+
+                var fileResult = await FilePicker.Default.PickAsync(new PickOptions
+                {
+                    PickerTitle = "Import progress.json",
+                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                    {
+                        { DevicePlatform.WinUI, new[] { ".json" } },
+                        { DevicePlatform.macOS, new[] { "json" } },
+                        { DevicePlatform.iOS, new[] { "public.json" } },
+                        { DevicePlatform.Android, new[] { "application/json", "text/json" } },
+                    }),
+                });
+
+                if (fileResult is null)
+                {
+                    ProgressTransferStatus = "Import canceled.";
+                    return;
+                }
+
+                await _progressProvider.ImportProgressAsync(fileResult);
+                RefreshModules();
+                ProgressTransferStatus = $"Imported {fileResult.FileName}.";
+            }
+            catch (Exception ex)
+            {
+                ProgressTransferStatus = $"Import failed: {ex.Message}";
+            }
+            finally
+            {
+                IsTransferringProgress = false;
+            }
         }
 
         [RelayCommand]
@@ -135,13 +206,21 @@ namespace KoreanFlashCardApp.ViewModels
 
         partial void OnIsLoadingChanged(bool value) => NotifyStateChanged();
 
+        partial void OnProgressTransferStatusChanged(string value) => NotifyStateChanged();
+
+        partial void OnIsTransferringProgressChanged(bool value) => NotifyStateChanged();
+
         private void NotifyStateChanged()
         {
             OnPropertyChanged(nameof(HasModules));
             OnPropertyChanged(nameof(HasLoadError));
+            OnPropertyChanged(nameof(HasProgressTransferStatus));
             OnPropertyChanged(nameof(CanStartStudying));
+            OnPropertyChanged(nameof(CanTransferProgress));
             StartModuleCommand.NotifyCanExecuteChanged();
             StudyAllCommand.NotifyCanExecuteChanged();
+            ExportProgressCommand.NotifyCanExecuteChanged();
+            ImportProgressCommand.NotifyCanExecuteChanged();
         }
     }
 }
