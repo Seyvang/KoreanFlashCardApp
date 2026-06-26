@@ -216,8 +216,7 @@ namespace KoreanFlashCardApp.ViewModels
                 return Task.CompletedTask;
             }
 
-            AdvanceToNextCard();
-            return Task.CompletedTask;
+            return AdvanceToNextCardAsync();
         }
 
         [RelayCommand]
@@ -243,7 +242,7 @@ namespace KoreanFlashCardApp.ViewModels
                 CorrectAnswers--;
             }
 
-            AdvanceToNextCard();
+            await AdvanceToNextCardAsync();
         }
 
         [RelayCommand]
@@ -252,11 +251,20 @@ namespace KoreanFlashCardApp.ViewModels
             return Shell.Current.GoToAsync("//MainPage");
         }
 
-        private void AdvanceToNextCard()
+        private async Task AdvanceToNextCardAsync()
         {
             isCorrect = false;
             if (CurrentCardIndex >= _sessionCards.Count - 1)
             {
+                try
+                {
+                    await _progressProvider.ExportProgressToDownloadsAsync();
+                }
+                catch
+                {
+                    // Session completion should not be blocked by backup export failures.
+                }
+
                 CurrentCard = null;
                 IsSessionComplete = true;
                 IsAnswerRevealed = false;

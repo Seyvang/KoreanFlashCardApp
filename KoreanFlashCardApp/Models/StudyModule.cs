@@ -5,10 +5,17 @@ namespace KoreanFlashCardApp.Models
 {
     public class StudyModule
     {
-        public StudyModule(int moduleNumber, int startIndex, IReadOnlyList<Word> words, int studiedCount, int dueCount)
+        public StudyModule(
+            int moduleNumber,
+            int startIndex,
+            int endIndex,
+            IReadOnlyList<Word> words,
+            int studiedCount,
+            int dueCount)
         {
             ModuleNumber = moduleNumber;
             StartIndex = startIndex;
+            EndIndex = endIndex;
             Words = words;
             StudiedCount = studiedCount;
             DueCount = dueCount;
@@ -17,6 +24,8 @@ namespace KoreanFlashCardApp.Models
         public int ModuleNumber { get; }
 
         public int StartIndex { get; }
+
+        public int EndIndex { get; }
 
         public IReadOnlyList<Word> Words { get; }
 
@@ -28,7 +37,7 @@ namespace KoreanFlashCardApp.Models
 
         public string ModuleLabel => $"Module {ModuleNumber:00}";
 
-        public string RangeLabel => $"Words {StartIndex + 1}-{StartIndex + Count}";
+        public string RangeLabel => $"Words {StartIndex + 1}-{EndIndex}";
 
         public string SpanLabel => $"{Words.First().Word_Name} to {Words.Last().Word_Name}";
 

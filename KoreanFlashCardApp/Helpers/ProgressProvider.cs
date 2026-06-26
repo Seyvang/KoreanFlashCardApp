@@ -7,6 +7,8 @@ namespace KoreanFlashCardApp.Helpers
     {
         private readonly string progressFileName = "progress.json";
         private readonly string progressBackupFileName = "progress.backup.json";
+        private const int ExportRetentionDays = 7;
+        private const string ProgressExportSearchPattern = "progress*.json";
         private List<WordProgress> wordProgress;
         private Dictionary<int, WordProgress> mappedWordProgress;
 
@@ -83,6 +85,7 @@ namespace KoreanFlashCardApp.Helpers
             await SaveAsync();
 
             var json = JsonSerializer.Serialize(wordProgress, new JsonSerializerOptions { WriteIndented = true });
+            await DeleteOldProgressExportsAsync(DateTimeOffset.Now.AddDays(-ExportRetentionDays));
             return await WriteExportAsync(json);
         }
 
@@ -142,37 +145,24 @@ namespace KoreanFlashCardApp.Helpers
         private static async Task<string> WriteExportAsync(string json)
         {
 #if WINDOWS
-            var downloadsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "Downloads");
-            Directory.CreateDirectory(downloadsPath);
-
-            var exportPath = Path.Combine(downloadsPath, "progress.json");
-            await File.WriteAllTextAsync(exportPath, json);
-            return exportPath;
+            return await WriteExportToDirectoryAsync(GetDownloadsPath(), json);
 #elif MACCATALYST
-            var downloadsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "Downloads");
-            Directory.CreateDirectory(downloadsPath);
-
-            var exportPath = Path.Combine(downloadsPath, "progress.json");
-            await File.WriteAllTextAsync(exportPath, json);
-            return exportPath;
+            return await WriteExportToDirectoryAsync(GetDownloadsPath(), json);
 #elif ANDROID
+            if (!OperatingSystem.IsAndroidVersionAtLeast(29))
+            {
+                return await WriteExportToDirectoryAsync(GetDownloadsPath(), json);
+            }
+
             var resolver = Android.App.Application.Context.ContentResolver
                 ?? throw new InvalidOperationException("Android content resolver is unavailable.");
 
             var values = new Android.Content.ContentValues();
             values.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, "progress.json");
             values.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "application/json");
-
-            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Q)
-            {
-                values.Put(
-                    Android.Provider.MediaStore.IMediaColumns.RelativePath,
-                    Android.OS.Environment.DirectoryDownloads);
-            }
+            values.Put(
+                Android.Provider.MediaStore.IMediaColumns.RelativePath,
+                Android.OS.Environment.DirectoryDownloads);
 
             var collectionUri = Android.Provider.MediaStore.Downloads.ExternalContentUri
                 ?? throw new InvalidOperationException("Android Downloads storage is unavailable.");
@@ -184,12 +174,159 @@ namespace KoreanFlashCardApp.Helpers
             await using var writer = new StreamWriter(stream);
             await writer.WriteAsync(json);
 
-            return itemUri.ToString();
+            return itemUri.ToString() ?? "progress.json";
 #else
-            var exportPath = Path.Combine(FileSystem.AppDataDirectory, "progress.json");
+            return await WriteExportToDirectoryAsync(GetDownloadsPath(), json);
+#endif
+        }
+
+        private async Task DeleteOldProgressExportsAsync(DateTimeOffset oldestAllowed)
+        {
+#if ANDROID
+            if (!OperatingSystem.IsAndroidVersionAtLeast(29))
+            {
+                await DeleteOldProgressExportsFromDirectoryAsync(oldestAllowed);
+                return;
+            }
+
+            var resolver = Android.App.Application.Context.ContentResolver;
+            if (resolver is null)
+            {
+                return;
+            }
+
+            var collectionUri = Android.Provider.MediaStore.Downloads.ExternalContentUri;
+            if (collectionUri is null)
+            {
+                return;
+            }
+
+            var projection = new string[]
+            {
+                "_id",
+                Android.Provider.MediaStore.IMediaColumns.DisplayName,
+                Android.Provider.MediaStore.IMediaColumns.DateModified,
+            };
+
+            using var cursor = resolver.Query(collectionUri, projection, null, null, null);
+            if (cursor is null)
+            {
+                return;
+            }
+
+            var idColumn = cursor.GetColumnIndexOrThrow("_id");
+            var nameColumn = cursor.GetColumnIndexOrThrow(Android.Provider.MediaStore.IMediaColumns.DisplayName);
+            var modifiedColumn = cursor.GetColumnIndexOrThrow(Android.Provider.MediaStore.IMediaColumns.DateModified);
+
+            while (cursor.MoveToNext())
+            {
+                var fileName = cursor.GetString(nameColumn);
+                if (!IsProgressExportFileName(fileName))
+                {
+                    continue;
+                }
+
+                var modifiedSeconds = cursor.GetLong(modifiedColumn);
+                var modifiedAt = DateTimeOffset.FromUnixTimeSeconds(modifiedSeconds);
+                if (modifiedAt >= oldestAllowed)
+                {
+                    continue;
+                }
+
+                var id = cursor.GetLong(idColumn);
+                var itemUri = Android.Content.ContentUris.WithAppendedId(collectionUri, id);
+                try
+                {
+                    resolver.Delete(itemUri, null, null);
+                }
+                catch
+                {
+                    // Cleanup is best-effort; a protected file should not block export.
+                }
+            }
+
+            await Task.CompletedTask;
+#else
+            await DeleteOldProgressExportsFromDirectoryAsync(oldestAllowed);
+#endif
+        }
+
+        private async Task DeleteOldProgressExportsFromDirectoryAsync(DateTimeOffset oldestAllowed)
+        {
+            var downloadsPath = GetDownloadsPath();
+            if (!Directory.Exists(downloadsPath))
+            {
+                return;
+            }
+
+            foreach (var filePath in Directory.EnumerateFiles(downloadsPath, ProgressExportSearchPattern))
+            {
+                var fileName = Path.GetFileName(filePath);
+                if (!IsProgressExportFileName(fileName))
+                {
+                    continue;
+                }
+
+                var modifiedAt = File.GetLastWriteTime(filePath);
+                if (modifiedAt >= oldestAllowed.LocalDateTime)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch
+                {
+                    // Cleanup is best-effort; a locked file should not block export.
+                }
+            }
+
+            await Task.CompletedTask;
+        }
+
+        private static string GetDownloadsPath()
+        {
+#if WINDOWS
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+#elif MACCATALYST
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+#elif ANDROID
+            return Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads)?.AbsolutePath
+                ?? FileSystem.AppDataDirectory;
+#else
+            return FileSystem.AppDataDirectory;
+#endif
+        }
+
+        private static async Task<string> WriteExportToDirectoryAsync(string downloadsPath, string json)
+        {
+            Directory.CreateDirectory(downloadsPath);
+
+            var exportPath = Path.Combine(downloadsPath, "progress.json");
             await File.WriteAllTextAsync(exportPath, json);
             return exportPath;
-#endif
+        }
+
+        private static bool IsProgressExportFileName(string? fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return false;
+            }
+
+            if (fileName.Equals("progress.json", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return fileName.StartsWith("progress (", StringComparison.OrdinalIgnoreCase)
+                && fileName.EndsWith(").json", StringComparison.OrdinalIgnoreCase);
         }
 
         private static async Task<List<WordProgress>?> TryLoadAsync(string filePath)

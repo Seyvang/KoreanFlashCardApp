@@ -174,7 +174,7 @@ namespace KoreanFlashCardApp.Data
             new WordImport(1162, "놓이다", "Be put on sth else (2) to become peaceful", null, 8),
             new WordImport(1163, "당장", "On the spot, immediately", null, 5),
             new WordImport(1164, "무렵", "The time when", null, 1),
-            new WordImport(1165, "밝다", "To be promising", null, 9),
+            new WordImport(1165, "밝다", "To be bright", null, 9),
             new WordImport(1166, "사물", "objects, things", null, 1),
             new WordImport(1167, "일반적", "Universal, general", null, 4),
             new WordImport(1168, "장소", "Place", null, 1),

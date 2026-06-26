@@ -19,24 +19,30 @@ namespace KoreanFlashCardApp.Helpers
 
             for (var startIndex = 0; startIndex < allWords.Count; startIndex += ModuleSize)
             {
-                var moduleWords = allWords.Skip(startIndex).Take(ModuleSize).ToList();
-                if (moduleWords.Count == 0)
+                var moduleStudyWords = allWords
+                    .Skip(startIndex)
+                    .Take(ModuleSize)
+                    .Select(word =>
+                    {
+                        progressLookup.TryGetValue(word.Word_ID, out var progress);
+                        return new StudyWord(word, progress);
+                    })
+                    .Where(studyWord => !studyWord.IsSkipped)
+                    .ToList();
+
+                if (moduleStudyWords.Count == 0)
                 {
                     continue;
                 }
 
-                var studiedCount = moduleWords.Count(word =>
-                    progressLookup.TryGetValue(word.Word_ID, out var progress) &&
-                    !progress.SkipWord);
-                var dueCount = moduleWords.Count(word =>
-                    progressLookup.TryGetValue(word.Word_ID, out var progress) &&
-                    !progress.SkipWord &&
-                    progress.Next_Test_Date.Date <= DateTime.Today);
+                var studiedCount = moduleStudyWords.Count(studyWord => studyWord.IsStudied);
+                var dueCount = moduleStudyWords.Count(studyWord => studyWord.IsDue);
 
                 modules.Add(new StudyModule(
-                    moduleNumber: modules.Count + 1,
+                    moduleNumber: (startIndex / ModuleSize) + 1,
                     startIndex: startIndex,
-                    words: moduleWords,
+                    endIndex: Math.Min(startIndex + ModuleSize, allWords.Count),
+                    words: moduleStudyWords.Select(studyWord => studyWord.Word).ToList(),
                     studiedCount: studiedCount,
                     dueCount: dueCount));
             }

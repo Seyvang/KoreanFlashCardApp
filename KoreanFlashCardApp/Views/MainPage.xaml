@@ -6,268 +6,276 @@
     xmlns:controls="clr-namespace:KoreanFlashCardApp.Controls"
     xmlns:models="clr-namespace:KoreanFlashCardApp.Models"
     xmlns:viewModels="clr-namespace:KoreanFlashCardApp.ViewModels"
-    Shell.NavBarIsVisible="False"
-    x:DataType="viewModels:MainPageViewModel"
     x:Name="RootPage"
-    BackgroundColor="{StaticResource AppPaper}">
+    x:DataType="viewModels:MainPageViewModel"
+    BackgroundColor="{StaticResource AppPaper}"
+    Shell.NavBarIsVisible="False">
 
-    <Grid Padding="20,28,20,20" RowDefinitions="Auto,Auto,Auto,Auto,*">
-        <Border
-            Grid.Row="0"
-            Padding="24"
-            Background="{StaticResource AppPrimaryBrush}"
-            Stroke="{StaticResource AppPrimaryBrush}"
-            StrokeShape="RoundRectangle 28">
-            <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="34"
-                    Text="{Binding Title}"
-                    TextColor="{StaticResource AppTextOnDarkSoft}" />
-                <Label
-                    FontSize="16"
-                    LineBreakMode="WordWrap"
-                    Text="{Binding Subtitle}"
-                    TextColor="{StaticResource AppTextOnPrimary}" />
-                <Label
-                    FontSize="13"
-                    Text="{Binding ModuleSummary}"
-                    TextColor="{StaticResource AppTextOnPrimaryMuted}" />
-            </VerticalStackLayout>
-        </Border>
-
-        <Border
-            Grid.Row="1"
-            Margin="0,18,0,0"
-            Padding="18"
-            Background="{StaticResource AppSurfaceBrush}"
-            Stroke="{StaticResource AppDividerBrush}"
-            StrokeShape="RoundRectangle 24">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                <VerticalStackLayout Spacing="6">
+    <RefreshView Command="{Binding RefreshModules}" IsRefreshing="{Binding IsLoading}">
+        <Grid Padding="20,28,20,20" RowDefinitions="Auto,Auto,Auto,Auto,*">
+            <Border
+                Grid.Row="0"
+                Padding="24"
+                Background="{StaticResource AppPrimaryBrush}"
+                Stroke="{StaticResource AppPrimaryBrush}"
+                StrokeShape="RoundRectangle 28">
+                <VerticalStackLayout Spacing="10">
                     <Label
                         FontAttributes="Bold"
-                        FontSize="20"
-                        Text="Study All"
-                        TextColor="{StaticResource AppInk}" />
+                        FontSize="34"
+                        Text="{Binding Title}"
+                        TextColor="{StaticResource AppTextOnDarkSoft}" />
                     <Label
-                        FontSize="14"
+                        FontSize="16"
                         LineBreakMode="WordWrap"
-                        Text="{Binding StudyAllSummary}"
-                        TextColor="{StaticResource AppText}" />
-                </VerticalStackLayout>
-
-                <Button
-                    Grid.Column="1"
-                    BackgroundColor="{StaticResource AppPrimary}"
-                    Command="{Binding StudyAllCommand}"
-                    CornerRadius="18"
-                    FontAttributes="Bold"
-                    IsEnabled="{Binding HasDueToday}"
-                    Padding="18,10"
-                    Text="Due Today"
-                    TextColor="{StaticResource AppSurface}"
-                    VerticalOptions="Center" />
-            </Grid>
-        </Border>
-
-        <Border
-            Grid.Row="2"
-            Margin="0,18,0,0"
-            Padding="18"
-            Background="{StaticResource AppSurfaceBrush}"
-            Stroke="{StaticResource AppDividerBrush}"
-            StrokeShape="RoundRectangle 24">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14" RowDefinitions="Auto,Auto">
-                <VerticalStackLayout Spacing="6">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="18"
-                        Text="Progress File"
-                        TextColor="{StaticResource AppInk}" />
+                        Text="{Binding Subtitle}"
+                        TextColor="{StaticResource AppTextOnPrimary}" />
                     <Label
                         FontSize="13"
-                        LineBreakMode="WordWrap"
-                        Text="Move progress.json through Downloads."
-                        TextColor="{StaticResource AppText}" />
+                        Text="{Binding ModuleSummary}"
+                        TextColor="{StaticResource AppTextOnPrimaryMuted}" />
                 </VerticalStackLayout>
+            </Border>
 
-                <HorizontalStackLayout
-                    Grid.Column="1"
-                    Spacing="8"
-                    VerticalOptions="Center">
+            <Border
+                Grid.Row="1"
+                Margin="0,18,0,0"
+                Padding="18"
+                Background="{StaticResource AppSurfaceBrush}"
+                Stroke="{StaticResource AppDividerBrush}"
+                StrokeShape="RoundRectangle 24">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="Study All"
+                            TextColor="{StaticResource AppInk}" />
+                        <Label
+                            FontSize="14"
+                            LineBreakMode="WordWrap"
+                            Text="{Binding StudyAllSummary}"
+                            TextColor="{StaticResource AppText}" />
+                    </VerticalStackLayout>
+
                     <Button
-                        BackgroundColor="{StaticResource AppSurfaceInset}"
-                        Command="{Binding ImportProgressCommand}"
+                        Grid.Column="1"
+                        Padding="18,10"
+                        BackgroundColor="{StaticResource AppPrimary}"
+                        Command="{Binding StudyAllCommand}"
+                        CornerRadius="18"
+                        FontAttributes="Bold"
+                        IsEnabled="{Binding HasDueToday}"
+                        Text="Due Today"
+                        TextColor="{StaticResource AppSurface}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border
+                Grid.Row="2"
+                Margin="0,18,0,0"
+                Padding="18"
+                Background="{StaticResource AppSurfaceBrush}"
+                Stroke="{StaticResource AppDividerBrush}"
+                StrokeShape="RoundRectangle 24">
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="14"
+                    RowDefinitions="Auto,Auto">
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Progress File"
+                            TextColor="{StaticResource AppInk}" />
+                        <Label
+                            FontSize="13"
+                            LineBreakMode="WordWrap"
+                            Text="Move progress.json through Downloads."
+                            TextColor="{StaticResource AppText}" />
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout
+                        Grid.Column="1"
+                        Spacing="8"
+                        VerticalOptions="Center">
+                        <Button
+                            Padding="14,9"
+                            BackgroundColor="{StaticResource AppSurfaceInset}"
+                            Command="{Binding ImportProgressCommand}"
+                            CornerRadius="16"
+                            FontAttributes="Bold"
+                            Text="Import"
+                            TextColor="{StaticResource AppBrownText}" />
+                        <Button
+                            Padding="14,9"
+                            BackgroundColor="{StaticResource AppSuccess}"
+                            Command="{Binding ExportProgressCommand}"
+                            CornerRadius="16"
+                            FontAttributes="Bold"
+                            Text="Export"
+                            TextColor="{StaticResource AppTextOnSuccess}" />
+                    </HorizontalStackLayout>
+
+                    <Label
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Margin="0,12,0,0"
+                        FontSize="12"
+                        IsVisible="{Binding HasProgressTransferStatus}"
+                        LineBreakMode="WordWrap"
+                        Text="{Binding ProgressTransferStatus}"
+                        TextColor="{StaticResource AppTextMuted}" />
+                </Grid>
+            </Border>
+
+            <Border
+                Grid.Row="3"
+                Margin="0,18,0,0"
+                Padding="16"
+                Background="{StaticResource AppDangerSoftBrush}"
+                IsVisible="{Binding HasLoadError}"
+                Stroke="{StaticResource AppDangerBorderBrush}"
+                StrokeShape="RoundRectangle 20">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="Progress could not be loaded"
+                        TextColor="{StaticResource AppDangerDeep}" />
+                    <Label
+                        FontSize="14"
+                        Text="{Binding LoadError}"
+                        TextColor="{StaticResource AppDangerDeep}" />
+                    <Button
+                        Padding="16,10"
+                        BackgroundColor="{StaticResource AppDangerDeep}"
+                        Command="{Binding RetryCommand}"
                         CornerRadius="16"
                         FontAttributes="Bold"
-                        Padding="14,9"
-                        Text="Import"
-                        TextColor="{StaticResource AppBrownText}" />
-                    <Button
-                        BackgroundColor="{StaticResource AppSuccess}"
-                        Command="{Binding ExportProgressCommand}"
-                        CornerRadius="16"
-                        FontAttributes="Bold"
-                        Padding="14,9"
-                        Text="Export"
-                        TextColor="{StaticResource AppTextOnSuccess}" />
-                </HorizontalStackLayout>
+                        HorizontalOptions="Start"
+                        Text="Retry"
+                        TextColor="{StaticResource AppTextOnDanger}" />
+                </VerticalStackLayout>
+            </Border>
 
-                <Label
-                    Grid.Row="1"
-                    Grid.ColumnSpan="2"
-                    Margin="0,12,0,0"
-                    FontSize="12"
-                    IsVisible="{Binding HasProgressTransferStatus}"
-                    LineBreakMode="WordWrap"
-                    Text="{Binding ProgressTransferStatus}"
-                    TextColor="{StaticResource AppTextMuted}" />
-            </Grid>
-        </Border>
-
-        <Border
-            Grid.Row="3"
-            Margin="0,18,0,0"
-            Padding="16"
-            Background="{StaticResource AppDangerSoftBrush}"
-            Stroke="{StaticResource AppDangerBorderBrush}"
-            StrokeShape="RoundRectangle 20"
-            IsVisible="{Binding HasLoadError}">
-            <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Progress could not be loaded"
-                    TextColor="{StaticResource AppDangerDeep}" />
-                <Label
-                    FontSize="14"
-                    Text="{Binding LoadError}"
-                    TextColor="{StaticResource AppDangerDeep}" />
-                <Button
-                    BackgroundColor="{StaticResource AppDangerDeep}"
-                    Command="{Binding RetryCommand}"
-                    CornerRadius="16"
-                    FontAttributes="Bold"
-                    HorizontalOptions="Start"
-                    Padding="16,10"
-                    Text="Retry"
-                    TextColor="{StaticResource AppTextOnDanger}" />
-            </VerticalStackLayout>
-        </Border>
-
-        <CollectionView
-            Grid.Row="4"
-            ItemsSource="{Binding Modules}"
-            Margin="0,20,0,0"
-            SelectionMode="None">
-            <CollectionView.EmptyView>
-                <Label
-                    HorizontalTextAlignment="Center"
-                    Text="No study modules are available yet."
-                    TextColor="{StaticResource AppTextMuted}"
-                    VerticalTextAlignment="Center" />
-            </CollectionView.EmptyView>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:StudyModule">
-                    <Border
-                        Margin="0,0,0,16"
-                        Padding="18"
-                        Background="{StaticResource AppSurfaceBrush}"
-                        Stroke="{StaticResource AppDividerBrush}"
-                        StrokeShape="RoundRectangle 24">
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="{Binding ModuleLabel}"
-                                    TextColor="{StaticResource AppWarningText}" />
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="22"
-                                    Text="{Binding RangeLabel}"
-                                    TextColor="{StaticResource AppInk}" />
-                                <Label
-                                    FontSize="15"
-                                    Text="{Binding SpanLabel}"
-                                    TextColor="{StaticResource AppText}" />
-                            </VerticalStackLayout>
-
-                            <Button
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                BackgroundColor="{StaticResource AppWarning}"
-                                Command="{Binding BindingContext.StartModuleCommand, Source={x:Reference RootPage}}"
-                                CommandParameter="{Binding ModuleNumber}"
-                                CornerRadius="18"
-                                FontAttributes="Bold"
-                                Padding="18,10"
-                                Text="Study"
-                                TextColor="{StaticResource AppTextOnDark}" />
-
-                            <Grid
-                                Grid.Row="2"
-                                Grid.ColumnSpan="2"
-                                ColumnDefinitions="*,*"
-                                Margin="0,18,0,0">
-                                <Border
+            <CollectionView
+                Grid.Row="4"
+                Margin="0,20,0,0"
+                ItemsSource="{Binding Modules}"
+                SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalTextAlignment="Center"
+                        Text="No study modules are available yet."
+                        TextColor="{StaticResource AppTextMuted}"
+                        VerticalTextAlignment="Center" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:StudyModule">
+                        <Border
+                            Margin="0,0,0,16"
+                            Padding="18"
+                            Background="{StaticResource AppSurfaceBrush}"
+                            Stroke="{StaticResource AppDividerBrush}"
+                            StrokeShape="RoundRectangle 24">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                <VerticalStackLayout
+                                    Grid.Row="0"
                                     Grid.Column="0"
-                                    Padding="12,10"
-                                    Background="{StaticResource AppSurfaceInsetBrush}"
-                                    Stroke="{StaticResource AppSurfaceInsetBrush}"
-                                    StrokeShape="RoundRectangle 16">
+                                    Spacing="6">
                                     <Label
-                                        FontSize="13"
-                                        Text="{Binding ProgressLabel}"
-                                        TextColor="{StaticResource AppBrownText}" />
-                                </Border>
+                                        FontAttributes="Bold"
+                                        FontSize="12"
+                                        Text="{Binding ModuleLabel}"
+                                        TextColor="{StaticResource AppWarningText}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="22"
+                                        Text="{Binding RangeLabel}"
+                                        TextColor="{StaticResource AppInk}" />
+                                    <Label
+                                        FontSize="15"
+                                        Text="{Binding SpanLabel}"
+                                        TextColor="{StaticResource AppText}" />
+                                </VerticalStackLayout>
 
-                                <Border
+                                <Button
+                                    Grid.Row="0"
                                     Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    Padding="12,10"
-                                    Background="{StaticResource AppPrimarySoftBrush}"
-                                    Stroke="{StaticResource AppPrimarySoftBrush}"
-                                    StrokeShape="RoundRectangle 16">
-                                    <Label
-                                        FontSize="13"
-                                        Text="{Binding DueLabel}"
-                                        TextColor="{StaticResource AppPrimaryText}" />
-                                </Border>
-                            </Grid>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                    Padding="18,10"
+                                    BackgroundColor="{StaticResource AppWarning}"
+                                    Command="{Binding BindingContext.StartModuleCommand, Source={x:Reference RootPage}}"
+                                    CommandParameter="{Binding ModuleNumber}"
+                                    CornerRadius="18"
+                                    FontAttributes="Bold"
+                                    Text="Study"
+                                    TextColor="{StaticResource AppTextOnDark}" />
 
-        <Grid
-            Grid.RowSpan="5"
-            BackgroundColor="{StaticResource AppDividerStrong}"
-            IsVisible="{Binding IsLoading}"
-            Opacity="0.92">
-            <VerticalStackLayout
-                HorizontalOptions="Center"
-                Spacing="14"
-                VerticalOptions="Center">
-                <ActivityIndicator
-                    Color="{StaticResource AppPrimary}"
-                    HeightRequest="48"
-                    IsRunning="{Binding IsLoading}"
-                    WidthRequest="48" />
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="22"
-                    HorizontalTextAlignment="Center"
-                    Text="Preparing your study session"
-                    TextColor="{StaticResource AppInk}" />
-                <Label
-                    FontSize="15"
-                    HorizontalTextAlignment="Center"
-                    Text="{Binding LoadingMessage}"
-                    TextColor="{StaticResource AppTextFaint}" />
-            </VerticalStackLayout>
+                                <Grid
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="2"
+                                    Margin="0,18,0,0"
+                                    ColumnDefinitions="*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Padding="12,10"
+                                        Background="{StaticResource AppSurfaceInsetBrush}"
+                                        Stroke="{StaticResource AppSurfaceInsetBrush}"
+                                        StrokeShape="RoundRectangle 16">
+                                        <Label
+                                            FontSize="13"
+                                            Text="{Binding ProgressLabel}"
+                                            TextColor="{StaticResource AppBrownText}" />
+                                    </Border>
+
+                                    <Border
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        Padding="12,10"
+                                        Background="{StaticResource AppPrimarySoftBrush}"
+                                        Stroke="{StaticResource AppPrimarySoftBrush}"
+                                        StrokeShape="RoundRectangle 16">
+                                        <Label
+                                            FontSize="13"
+                                            Text="{Binding DueLabel}"
+                                            TextColor="{StaticResource AppPrimaryText}" />
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid
+                Grid.RowSpan="5"
+                BackgroundColor="{StaticResource AppDividerStrong}"
+                IsVisible="{Binding IsLoading}"
+                Opacity="0.92">
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Spacing="14"
+                    VerticalOptions="Center">
+                    <ActivityIndicator
+                        HeightRequest="48"
+                        IsRunning="{Binding IsLoading}"
+                        WidthRequest="48"
+                        Color="{StaticResource AppPrimary}" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="22"
+                        HorizontalTextAlignment="Center"
+                        Text="Preparing your study session"
+                        TextColor="{StaticResource AppInk}" />
+                    <Label
+                        FontSize="15"
+                        HorizontalTextAlignment="Center"
+                        Text="{Binding LoadingMessage}"
+                        TextColor="{StaticResource AppTextFaint}" />
+                </VerticalStackLayout>
+            </Grid>
         </Grid>
-    </Grid>
+    </RefreshView>
 </controls:BasePage>
